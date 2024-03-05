@@ -5,7 +5,7 @@ body, html {
 }
 
 .blocked-message {
-    background-color: #010922; /* Dark blue background */
+    background-color: #1a1a2e; /* Dark blue background */
     color: #ffffff; /* Light red text */
     text-align: center;
     height: 100%;
