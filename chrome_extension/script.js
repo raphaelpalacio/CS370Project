@@ -4,7 +4,7 @@ setInterval(function (){
     cur = parseCurrent(cur);
     console.log(cur);
 
-    chrome.storage.local.set({["current_website"]: cur}, functi0n () {});
+    chrome.storage.local.set({["current_website"]: cur}, function () {});
 
     chrome.storage.local.get(["websites"], function (items){
 
@@ -24,5 +24,49 @@ setInterval(function (){
         var website3 = splitted[2];
         var website4 = splitted[3];
         var website5 = splitted[4];
-    })
-})
+
+        // redirect website to github page
+        if (website1 == cur){
+            console.log("tyest");
+            window.location.replace(
+                "https://raphaelpalacio.github.io/CS370Project/"
+            )
+        }
+        else if (website2 == cur){
+            console.log("tyest");
+            window.location.replace(
+                "https://raphaelpalacio.github.io/CS370Project/"
+            );
+        }
+        else if (website3 == cur){
+            console.log("tyest");
+            window.location.replace(
+                "https://raphaelpalacio.github.io/CS370Project/"
+            );
+        }
+        else if (website4 == cur){
+            console.log("tyest");
+            window.location.replace(
+                "https://raphaelpalacio.github.io/CS370Project/"
+            );
+        }
+        else if (website5 == cur){
+            console.log("tyest");
+            window.location.replace(
+                "https://raphaelpalacio.github.io/CS370Project/"
+            );
+        }
+    });
+}, 1000);
+
+
+function parsCurr (currentURL){
+
+    const pre = "www.";
+    if (!currentURL.toString().startsWith("www.")){
+        var newLink = pre + currentURL;
+        console.log(newLink);
+        return newLink;
+    }
+    return currentURL
+}
