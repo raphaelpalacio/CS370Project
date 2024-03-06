@@ -38,35 +38,35 @@ setInterval(function () {
       if (website1 == cur) {
         console.log("tyest");
           window.location.replace(
-            "https://raphaelpalacio.github.io/CS370Project/"
+            "https://raphaelpalacio.github.io/PersonalWebsite/"
           );
           
       }
       else if (website2 == cur) {
         console.log("tyest");
           window.location.replace(
-            "https://raphaelpalacio.github.io/CS370Project/"
+            "https://raphaelpalacio.github.io/PersonalWebsite/"
           );
           
       }
       else if (website3 == cur) {
         console.log("tyest");
           window.location.replace(
-            "https://raphaelpalacio.github.io/CS370Project/"
+            "https://raphaelpalacio.github.io/PersonalWebsite/"
           );
           
       }
       else if (website4 == cur) {
         console.log("tyest");
           window.location.replace(
-            "https://raphaelpalacio.github.io/CS370Project/"
+            "https://raphaelpalacio.github.io/PersonalWebsite/"
           );
           
       }
       else if (website5 == cur) {
         console.log("tyest");
           window.location.replace(
-            "https://raphaelpalacio.github.io/CS370Project/"
+            "https://raphaelpalacio.github.io/PersonalWebsite/"
           );
       }
     });
