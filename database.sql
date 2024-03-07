@@ -51,23 +51,23 @@ CREATE TABLE Message (
 
 --Many-To-Many User and Study Group relationship
 CREATE TABLE StudyGroupMember (
-    PRIMARY KEY (mID, sgID),
-    FOREIGN KEY (mID) REFERENCES User(uID),
-    FOREIGN KEY (sgID) REFERENCES StudyGroup(sgID)
+  PRIMARY KEY (mID, sgID),
+  FOREIGN KEY (mID) REFERENCES User(uID),
+  FOREIGN KEY (sgID) REFERENCES StudyGroup(sgID)
 );
 
 --Many-To-Many Study Group and Text Channel relationship
 CREATE TABLE StudyGroupChannel (
-    PRIMARY KEY (sgID, cID),
-    FOREIGN KEY (sgID) REFERENCES StudyGroup(sgID),
-    FOREIGN KEY (cID) REFERENCES Channel(cID)
+  PRIMARY KEY (sgID, cID),
+  FOREIGN KEY (sgID) REFERENCES StudyGroup(sgID),
+  FOREIGN KEY (cID) REFERENCES Channel(cID)
 );
 
 --Many-To-Many Text Channel and Message relationship
 CREATE TABLE StudyGroupChannel (
-    PRIMARY KEY (cID, mID),
-    FOREIGN KEY (cID) REFERENCES Channel(cID),
-    FOREIGN KEY (mID) REFERENCES Message(mID)
+  PRIMARY KEY (cID, mID),
+  FOREIGN KEY (cID) REFERENCES Channel(cID),
+  FOREIGN KEY (mID) REFERENCES Message(mID)
 );
 
 CREATE TABLE BlockedWebsites (
@@ -77,4 +77,11 @@ CREATE TABLE BlockedWebsites (
   is_blocked boolean,
   created_at DATETIME,
   updated_at DATETIME,
+)
+
+CREATE TABLE Achievements (
+  aID INT PRIMARY KEY,
+  uID INT FOREIGN KEY REFERENCES USER(uID), 
+  achievement VARCHAR(50),
+  earned_at DATETIME,
 )
