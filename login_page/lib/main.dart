@@ -41,12 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.indigo[900],
         title: Text(widget.title),
       ),
 
       body: Container( // Wrap Scaffold with Container
-      color: Colors.blue[900],
+      color: Colors.indigo[900],
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
