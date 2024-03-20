@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Image.asset('assets/images/pc.png'),
             const SizedBox(
               width : 250,
               child : TextField(
