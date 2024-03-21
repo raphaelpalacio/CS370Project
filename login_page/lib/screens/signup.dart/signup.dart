@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
             titleTextStyle: TextStyle(color: Colors.white, fontSize: 50, fontFamily: 'Lucida'), 
           ),
       ),
-      home: const MyHomePage(title: 'Log In'),
+      home: const MyHomePage(title: 'Signup'),
     );
   }
 }
@@ -69,7 +68,19 @@ class _MyHomePageState extends State<MyHomePage> {
               child : TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Set Password',
+                  labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lucida'),
+                ),
+              ),
+            ),  
+            const SizedBox(height: 16),
+
+            const SizedBox(
+              width : 250,
+              child : TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lucida'),
                 ),
               ),
