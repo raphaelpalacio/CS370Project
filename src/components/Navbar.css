@@ -1,0 +1,44 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.navbar-logo a,
+.navbar-links a,
+.login-button,
+.logout-button {
+  /* Apply the same styles to the login button */
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0 10px;
+  padding-right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.login-button {
+  padding-right: 10px;
+}
+
+.navbar-logo .logo-text {
+  font-size: 1.5rem;
+  padding-left: 25px;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
