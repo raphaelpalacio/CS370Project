@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import uuid
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'  # SQLite database URI
@@ -64,6 +65,40 @@ def session_history():
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
 
+@app.route('/users/register', methods=['POST'])
+def register_user():
+    data = request.json # username, email, password, role
+    new_user = User(uID = int(uuid.uuid4()), username=data['username'], email=data['email'], password=data['password'], updated_at = datetime.now(), role = 1)
+    db.user.add(new_user)
+    db.user.commit()
+    return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
+
+@app.route('/users/login', mehtods=['POST'])
+def login_user():
+    #data = 
+    user_id = 123  # Assuming the user ID is obtained from the authentication process
+    
+    # Create a JWT token
+    token = jwt.encode({'user_id': user_id}, app.config['SECRET_KEY'], algorithm='HS256')
+
+    return jsonify({'token': token}), 200
+
+@app.route('/users/profile', methods=['GET'])
+def user_profile():
+
+
+
+    return
+
+@app.route('/users/profile/update', methods=['PATCH'])
+def update_profile():
+
+    return
+
+@app.route('/users/delete', methods=['DELETE'])
+def delete_user():
+
+    return
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Ensures tables are created before the first request if they don't exist
