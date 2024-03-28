@@ -1,22 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:postgres/postgres.dart';
 
-/*
-Future<void> operation() async {
 
-var connection = PostgreSQLConnection(
-"ceu9lmqblp8t3q.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com", // hostURL
-5432,                                                                               // port
-"dbql83qc3h630i",                                                         // databaseName
-username: "u7p6pp4kmgnevv",   
-password: "p13cb93218af1c6edc2b30e70ac0cf589b7a1dd68fb999573031e0d1269af9a1f",
-useSSL: true
-);
 
-await connection.open();
-      print("Connected");
-} 
-*/
+
 
 
 void main() {
@@ -35,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
-            titleTextStyle: TextStyle(color: Colors.white, fontSize: 50, fontFamily: 'Lucida'), 
+            titleTextStyle: TextStyle(color: Colors.white, fontSize: 50), 
           ),
       ),
       home: const MyHomePage(title: 'Log In'),
@@ -74,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child : TextField(
                 decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lucida'),
+                labelStyle: TextStyle(color: Colors.white, fontFamily: 'fonts/outfit.ttf'),
                 ),
               ),
             ),
@@ -87,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lucida'),
+                  labelStyle: TextStyle(color: Colors.white, fontFamily: 'fonts/outift.ttf'),
                 ),
               ),
             ),  
