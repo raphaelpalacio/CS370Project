@@ -1,19 +1,42 @@
-.home-container {
+body {
+  background-color: #0E0F2E;
+}
+
+.home-container-left {
   display: flex;
+  width: 45%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  float: left;
+  padding-left: 20px;
 }
 
-.home-container h1 {
-  font-size: 3rem;
-  color: #333;
+
+.home-container-left h1 {
+  font-size: 5rem;
+  color: #FFFFFF;
+  font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.home-container p {
+.home-container-left p {
   font-size: 1.2rem;
-  color: #666;
+  color: #FFFFFF;
+}
+
+.home-container-right {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  float: right;
+}
+
+.home-container-right img {
+  width: 500px;
+  height: 351px;
 }
