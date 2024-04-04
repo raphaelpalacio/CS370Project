@@ -16,11 +16,11 @@ export default function Component() {
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
               <div className="bg-gray-900 bg-opacity-10 p-4 rounded-lg">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-slate-50">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-slate-50">
                 Ditch the Guilt, Not the Group Chat
                 </h1>
                 <br></br>
-                <p className="max-w-[600px] text-gray-500 md:text-sm dark:text-slate-100">
+                <p className="max-w-[600px] text-gray-500 md:text-lg dark:text-slate-100">
                   A study and work application that supports all of your Pomodoro needs. Get work done in focused bursts and reward yourself with micro-hangouts with friends.
                 </p>
               </div>
