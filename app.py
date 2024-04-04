@@ -73,6 +73,12 @@ def verify_decode_jwt(token):
             abort(401, description="Unable to parse authentication token.")
     abort(401, description="Unable to find appropriate key.")
 
+def is_token_blacklisted(token):
+    return token in blacklisted_tokens
+
+    # You would need to create a storage mechanism for the blacklisted tokens
+blacklisted_tokens = set()
+
 # Models
 class User(db.Model):
     __tablename__ = 'user'
@@ -148,6 +154,20 @@ def login_user():
         return jsonify({"success": True, "message": "User authenticated", "user": payload["sub"]}), 200
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 401
+    
+
+
+
+@app.route('/users/logout', methods=['POST'])
+def logout_user():
+    token = get_token_auth_header()
+    # Add the token to the blacklist
+    blacklisted_tokens.add(token)
+
+    return jsonify({"success": True, "message": "User logged out successfully."}), 200
+
+
+
 
 
 @app.route('/users/profile', methods=['GET'])
