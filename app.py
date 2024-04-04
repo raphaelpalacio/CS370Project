@@ -1,35 +1,42 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 from datetime import datetime
-import uuid
 from jose import jwt
-import json 
+import json
 from urllib.request import urlopen
-import requests
+import uuid
 
+# Initialize Flask App
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'  # SQLite database URI
+CORS(app)
+bcrypt = Bcrypt(app)
+
+# Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize DB
 db = SQLAlchemy(app)
-AUTH0_DOMAIN = 'dev-otrfj0d3n15cdjdz.us.auth0.com' # 
-API_AUDIENCE = 'https://dev-otrfj0d3n15cdjdz.us.auth0.com/api/v2/' #
+
+# Auth0 Configuration
+AUTH0_DOMAIN = 'dev-otrfj0d3n15cdjdz.us.auth0.com'
+API_AUDIENCE = 'https://dev-otrfj0d3n15cdjdz.us.auth0.com/api/v2/'
 ALGORITHMS = ['RS256']
 
-# 
+# Helper Functions
 def get_token_auth_header():
     auth = request.headers.get("Authorization", None)
     if not auth:
-        raise Exception("Authorization header is missing")
-
+        abort(401, description="Authorization header is missing")
     parts = auth.split()
-
     if parts[0].lower() != "bearer":
-        raise Exception("Authorization header must start with Bearer")
+        abort(401, description="Authorization header must start with Bearer")
     elif len(parts) == 1:
-        raise Exception("Token not found")
+        abort(401, description="Token not found")
     elif len(parts) > 2:
-        raise Exception("Authorization header must be Bearer token")
-
+        abort(401, description="Authorization header must be Bearer token")
     token = parts[1]
     return token
 
@@ -58,24 +65,22 @@ def verify_decode_jwt(token):
             )
             return payload
         except jwt.ExpiredSignatureError:
-            raise Exception("Token expired.")
+            abort(401, description="Token expired.")
         except jwt.JWTClaimsError:
-            raise Exception("Incorrect claims. Please, check the audience and issuer.")
+            abort(401, description="Incorrect claims. Please, check the audience and issuer.")
         except Exception:
-            raise Exception("Unable to parse authentication token.")
-
-    raise Exception("Unable to find appropriate key.")
+            abort(401, description="Unable to parse authentication token.")
+    abort(401, description="Unable to find appropriate key.")
 
 # Models
 class User(db.Model):
     __tablename__ = 'user'
     uID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(82), nullable=False)
+    email = db.Column(db.String(254), unique=True, nullable=False)  # 254 character limit
+    password = db.Column(db.String(60), nullable=False)  # Bcrypt hashes are 60 chars
     updated_at = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.Integer, nullable=False)
-
 class Session(db.Model):
     __tablename__ = 'session'
     sID = db.Column(db.Integer, primary_key=True)
@@ -92,6 +97,7 @@ class Playlist(db.Model):
     uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
     playlist_name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 @app.route('/')
 def index():
@@ -125,13 +131,15 @@ def session_history():
 
 @app.route('/users/register', methods=['POST'])
 def register_user():
-    data = request.json # username, email, password, role
-    new_user = User(uID = int(uuid.uuid4()), username=data['username'], email=data['email'], password=data['password'], updated_at = datetime.now(), role = 1)
-    db.user.add(new_user)
-    db.user.commit()
+    data = request.json
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(username=data['username'], email=data['email'], password=hashed_password, updated_at=datetime.now(), role=1)
+    db.session.add(new_user)
+    db.session.commit()
     return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
 
-@app.route('/users/login', mehtods=['POST'])
+
+@app.route('/users/login', methods=['POST'])
 def login_user():
     token = get_token_auth_header()
     try:
@@ -139,6 +147,7 @@ def login_user():
         return jsonify({"success": True, "message": "User authenticated", "user": payload["sub"]}), 200
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 401
+
 
 @app.route('/users/profile', methods=['GET'])
 def user_profile():
