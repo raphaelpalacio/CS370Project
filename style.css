@@ -1,0 +1,42 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.blocked-message {
+    background-color: #1a1a2e; /* Dark blue background */
+    color: #ffcccb; /* Light red text */
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+p {
+    font-size: 1.5em;
+}
+
+.aboutUs {
+    background-color: #1a1a2e; /* Dark blue background */
+    color: #ffcccb; /* Light red text */
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.aboutUsp 
+    {
+        font-weight: 900;
+        width: 75%;
+        text-align: center;
+    }
