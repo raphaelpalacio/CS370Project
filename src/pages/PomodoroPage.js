@@ -1,10 +1,12 @@
 import React from "react";
+import { TodoWrapper } from "./TodoWrapper";
+import Navbar from "../components/Navbar";
 
 const PomodoroPage = () => {
   return (
     <div>
-      <h1>Pomodoro Timer</h1>
-      <p>Here will be the Pomodoro Timer functionality.</p>
+      <Navbar />
+      <TodoWrapper /> {}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import "./Todo.css";
 
 export const EditTodoForm = ({editTodo, task}) => {
     const [value, setValue] = useState(task.task);
