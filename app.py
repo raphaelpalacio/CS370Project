@@ -7,6 +7,7 @@ from jose import jwt
 import json
 from urllib.request import urlopen
 import uuid
+import sqlite3
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -166,7 +167,11 @@ def user_profile():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    user_profile = users_db[user]
+    user_profile = {
+        "username": user.username,
+        "email": user.email,
+        "role": user.role
+    }
 
     # return username, email, and role
     return jsonify({
@@ -177,15 +182,66 @@ def user_profile():
 
 @app.route('/users/profile/update', methods=['PATCH'])
 def update_profile():
+    # Authenticate with token
+    token = get_token_auth_header()
+    if not token:
+        return jsonify({"error": "Authorization token is missing"}), 401
 
+    payload = verify_decode_jwt(token)
+    if not payload:
+        return jsonify({"error": "Invalid token"}), 401
     
-    return
+    user_id = payload.get("sub")
+    user = User.query.filter_by(uID=user_id).first()  # Query the User table for the user ID
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    data = request.json
+    if not data:
+        return jsonify({"error": "Request body is missing or not JSON"}), 400, 400
+
+    if 'username' in data:
+        user.username = data['username']
+    if 'email' in data:
+        user.email = data['email']
+    if 'role' in data:
+        user.role = data['role']
+    # password too?
+
+    db.session.commit()
+    
+    updated_profile = {
+        "username": user.username,
+        "email": user.email,
+        "role": user.role
+    }
+
+    # Return success response
+    return jsonify({"message": "User profile updated successfully"}), 200
 
 @app.route('/users/delete', methods=['DELETE'])
 def delete_user():
+    token = get_token_auth_header()
+    if not token:
+        return jsonify({"error": "Authorization token is missing"}), 401
 
-    return
+    payload = verify_decode_jwt(token)
+    if not payload:
+        return jsonify({"error": "Invalid token"}), 401
 
+    user_id_to_delete = payload.get("sub")
+    
+    user_to_delete = User.query.filter_by(uID=user_id_to_delete).first()
+
+    if not user_to_delete:
+        return jsonify({"error": "User not found"}), 404
+
+    # Delete the user record from the database
+    db.session.delete(user_to_delete)
+    db.session.commit()
+
+    # Return success response
+    return jsonify({"message": "User deleted successfully"}), 200
 
 if __name__ == '__main__':
     with app.app_context():
