@@ -1,30 +1,18 @@
 import React from "react";
-import { ReactTyped } from "react-typed";
+import image from "../images/pc.jpeg";
+import "./AboutPage.css";
 
 const AboutPage = () => {
   return (
-    <div className="text-white">
-      <div className="max-w-[800px] mt-[-96px] w-full h-screen mx-auto text-center flex flex-col justify-center">
-        <h1 className="md:text-7xl sm:text-6xl text-4xl font-bold md:py-6">
-          All Star Code
-        </h1>
-        <div className="flex justify-center items-center">
-          <p className="md:text-5xl sm:text-4xl text-xl font-bold py-4">
-            Institution for the World:
-          </p>
-          {/* adding the typed effect */}
-          <ReactTyped
-            className="md:text-5xl sm:text-4xl text-xl font-bold md:pl-4 pl-2"
-            strings={["Learn", "Fail", "Improve"]}
-            typeSpeed={120}
-            backSpeed={140}
-            loop
-          />
-        </div>
-        <p className="md:text-2xl text-xl font-bold text-gray-500">
-          Transform into a force to shape the world.
-        </p>
-      </div>
+    <div className="aboutUs">
+      <h1>About Us</h1>
+      <img src={image} alt="Pomodoro Plus" width="220" height="220" />
+      <p className="aboutUsp">
+        Pomodoro Plus was created by our team to streamline the study
+        experience. With elements such as personalized themes, colors, group
+        study sessions, and a direct connection to Spotify, we want to ensure
+        that you can achieve the optimal experience.
+      </p>
     </div>
   );
 };
