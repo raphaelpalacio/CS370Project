@@ -75,7 +75,6 @@ def verify_decode_jwt(token):
 
 def is_token_blacklisted(token):
     return token in blacklisted_tokens
-
     # You would need to create a storage mechanism for the blacklisted tokens
 blacklisted_tokens = set()
 
@@ -88,6 +87,9 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)  # Bcrypt hashes are 60 chars
     updated_at = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.Integer, nullable=False)
+    # Many-to-Many Relationship with StudyGroup
+    study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
+                                   back_populates='members')
 class Session(db.Model):
     __tablename__ = 'session'
     sID = db.Column(db.Integer, primary_key=True)
@@ -105,6 +107,65 @@ class Playlist(db.Model):
     playlist_name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class Channel(db.Model):
+    __tablename__ = 'channel'
+    cID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    channel_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    # Many-to-Many Relationship with StudyGroup
+    study_groups = db.relationship('StudyGroup', secondary='StudyGroupChannel',
+                                   back_populates='channels')
+    # Many-to-Many Relationship with Message
+    messages = db.relationship('Message', secondary='ChannelMessage',
+                               back_populates='channels')
+
+class Message(db.Model):
+    __tablename__ = 'message'
+    mID = db.Column(db.Integer, primary_key=True)
+    senderID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    edited_at = db.Column(db.DateTime, nullable=True)
+    # Many-to-Many Relationship with Channel
+    channels = db.relationship('Channel', secondary='ChannelMessage',
+                               back_populates='messages')
+
+# Many to Many Relationship Models
+class StudyGroup(db.Model):
+    __tablename__ = 'study_group'
+    sgID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    group_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
+    duration = db.Column(db.Integer)
+     # Many-to-Many Relationships
+    members = db.relationship('User', secondary='StudyGroupMember',
+                              back_populates='study_groups')
+    channels = db.relationship('Channel', secondary='StudyGroupChannel',
+                               back_populates='study_groups')
+
+# Association Tables
+
+# Association table for Users and Study Groups
+StudyGroupMember = db.Table('StudyGroupMember',
+    db.Column('uID', db.Integer, db.ForeignKey('user.uID'), primary_key=True),
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True)
+)
+
+# Association table for Study Groups and Channels
+StudyGroupChannel = db.Table('StudyGroupChannel',
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True),
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True)
+)
+
+# Association table for Channels and Messages
+ChannelMessage = db.Table('ChannelMessage',
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True),
+    db.Column('mID', db.Integer, db.ForeignKey('message.mID'), primary_key=True)
+)
 
 @app.route('/')
 def index():
@@ -156,8 +217,6 @@ def login_user():
         return jsonify({"success": False, "message": str(e)}), 401
     
 
-
-
 @app.route('/users/logout', methods=['POST'])
 def logout_user():
     token = get_token_auth_header()
@@ -165,9 +224,6 @@ def logout_user():
     blacklisted_tokens.add(token)
 
     return jsonify({"success": True, "message": "User logged out successfully."}), 200
-
-
-
 
 
 @app.route('/users/profile', methods=['GET'])
