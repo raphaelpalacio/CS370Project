@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -329,6 +329,39 @@ def delete_user():
 
     # Return success response
     return jsonify({"message": "User deleted successfully"}), 200
+
+
+@app.route('/login/spotify')
+def login_spotify():
+    auth_url = f"https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={SPOTIFY_REDIRECT_URI}&scope={SPOTIFY_SCOPES}"
+    return redirect(auth_url)
+
+@app.route('/callback')
+def spotify_callback():
+    code = request.args.get('code')
+    auth_token_url = 'https://accounts.spotify.com/api/token'
+    data = {
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': SPOTIFY_REDIRECT_URI,
+        'client_id': SPOTIFY_CLIENT_ID,
+        'client_secret': SPOTIFY_CLIENT_SECRET
+    }
+    post_request = requests.post(auth_token_url, data=data)
+    response_data = post_request.json()
+    access_token = response_data.get('access_token')
+    refresh_token = response_data.get('refresh_token')
+
+    # Here, you would store the access and refresh tokens in your database associated with the user
+    # For demonstration, storing it in session
+    session['access_token'] = access_token
+    session['refresh_token'] = refresh_token
+
+    # Redirect to a page where you want the user to go next
+    return redirect('/homePage')
+
+# Make sure to set a secret key for sessions to work
+app.secret_key = 'your_secret_key'
 
 if __name__ == '__main__':
     with app.app_context():
