@@ -8,6 +8,7 @@ import json
 from urllib.request import urlopen
 import uuid
 import sqlite3
+import os
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -21,10 +22,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize DB
 db = SQLAlchemy(app)
 
+# Load environment variables
+load_dotenv()
+
 # Auth0 Configuration
-AUTH0_DOMAIN = 'dev-otrfj0d3n15cdjdz.us.auth0.com'
-API_AUDIENCE = 'https://dev-otrfj0d3n15cdjdz.us.auth0.com/api/v2/'
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+API_AUDIENCE = os.getenv('API_AUDIENCE')
 ALGORITHMS = ['RS256']
+
+
+# Spotify configuration
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'  # Make sure to add this in your Spotify app settings
+SPOTIFY_SCOPES = 'user-read-playback-state user-modify-playback-state'  # Example scopes
+
 
 # Helper Functions
 def get_token_auth_header():
@@ -148,7 +160,6 @@ class StudyGroup(db.Model):
                                back_populates='study_groups')
 
 # Association Tables
-
 # Association table for Users and Study Groups
 StudyGroupMember = db.Table('StudyGroupMember',
     db.Column('uID', db.Integer, db.ForeignKey('user.uID'), primary_key=True),
