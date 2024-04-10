@@ -2,10 +2,12 @@ from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from datetime import datetime
 from jose import jwt
 import json
 from urllib.request import urlopen
+from dotenv import load_dotenv
 import uuid
 import sqlite3
 import os
@@ -84,6 +86,7 @@ def verify_decode_jwt(token):
         except Exception:
             abort(401, description="Unable to parse authentication token.")
     abort(401, description="Unable to find appropriate key.")
+
 
 def is_token_blacklisted(token):
     return token in blacklisted_tokens
@@ -358,6 +361,64 @@ def spotify_callback():
     session['refresh_token'] = refresh_token
 
     # Redirect to a page where you want the user to go next
+    return redirect('/homePage')
+
+
+@app.route('/auth/callback')
+def auth0_callback():
+    code = request.args.get('code')
+    if not code:
+        return "Error: No code returned from Auth0.", 400
+
+    token_url = f'https://{AUTH0_DOMAIN}/oauth/token'
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    payload = {
+        'grant_type': 'authorization_code',
+        'client_id': AUTH0_CLIENT_ID,
+        'client_secret': os.getenv('AUTH0_CLIENT_SECRET'),
+        'code': code,
+        'redirect_uri': os.getenv('AUTH0_CALLBACK_URL')
+    }
+
+    response = requests.post(token_url, data=payload, headers=headers)
+    tokens = response.json()
+    id_token = tokens.get('id_token')
+
+    # Optionally, verify the token, extract user information
+    user_info = verify_decode_jwt(id_token)
+
+    """
+    Here, you would typically check if the user exists in your database,
+    create a new user if necessary, and establish a session or token for your app.
+    """
+    # Decode the token to get user info
+    user_info = verify_decode_jwt(id_token)
+    if not user_info:
+        return "Error: Unable to verify user information.", 400
+
+    # Extract email or other unique identifier from user_info
+    email = user_info.get('email')
+    if not email:
+        return "Error: Email not provided by Auth0.", 400
+
+    # Check if user exists in your database
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        # Create a new user if it does not exist
+        user = User(
+            username=user_info.get('nickname', email.split('@')[0]),  # Example username
+            email=email,
+            password='',  # You might not store a password since authentication is handled by Auth0
+            updated_at=datetime.utcnow(),
+            role=1  # Example role, adjust as necessary
+        )
+        db.session.add(user)
+        db.session.commit()
+    else:
+        # Update existing user's last login or other relevant fields
+        user.updated_at = datetime.utcnow()
+        db.session.commit()
+    # Redirect to home screen or dashboard after successful authentication
     return redirect('/homePage')
 
 # Make sure to set a secret key for sessions to work
