@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 const PomodoroPage = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <TodoWrapper /> {}
     </div>
   );
