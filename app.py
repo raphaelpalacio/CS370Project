@@ -87,6 +87,23 @@ def verify_decode_jwt(token):
             abort(401, description="Unable to parse authentication token.")
     abort(401, description="Unable to find appropriate key.")
 
+def current_user():
+    # Attempt to retrieve user ID from session first
+    user_id = session.get('user_id')
+    
+    # If not found in session, decode the JWT token to get the user ID
+    if not user_id:
+        token = get_token_auth_header()
+        if not token:
+            abort(401, description="No authorization token found")
+        try:
+            payload, _ = verify_decode_jwt(token)
+            user_id = payload.get('sub')  # 'sub' is typically the user ID in JWT
+        except Exception as e:
+            print(str(e))  # For debugging purposes
+            abort(401, description="Could not verify the user token")
+    
+    return user_id
 
 def is_token_blacklisted(token):
     return token in blacklisted_tokens
@@ -105,6 +122,19 @@ class User(db.Model):
     # Many-to-Many Relationship with StudyGroup
     study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
                                    back_populates='members')
+
+class ToDo(db.Model):
+    __tablename__ = 'todo'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    is_complete = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+
+    def __repr__(self):
+        return '<ToDo %r>' % self.title
 class Session(db.Model):
     __tablename__ = 'session'
     sID = db.Column(db.Integer, primary_key=True)
@@ -184,6 +214,45 @@ ChannelMessage = db.Table('ChannelMessage',
 @app.route('/')
 def index():
     return "Welcome to the Pomodoro API!"
+
+@app.route('/todos', methods=['GET'])
+def get_todos():
+    user_sub = current_user()  # This is the unique identifier for the user.
+    user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
+
+    if not user:
+        return jsonify({'message': 'User not found.'}), 404
+
+    todos = ToDo.query.filter_by(user_id=user.uID).all()
+    return jsonify([{'id': todo.id, 'title': todo.title, 'description': todo.description, 'is_complete': todo.is_complete} for todo in todos])
+
+
+@app.route('/todos', methods=['POST'])
+def add_todo():
+    user_id = current_user()
+    data = request.json
+    new_todo = ToDo(title=data['title'], description=data['description'], user_id=user_id)
+    db.session.add(new_todo)
+    db.session.commit()
+    return jsonify({'message': 'ToDo created successfully.'}), 201
+
+@app.route('/todos/<int:todo_id>', methods=['PUT'])
+def update_todo(todo_id):
+    todo = ToDo.query.get_or_404(todo_id)
+    data = request.json
+    todo.title = data.get('title', todo.title)
+    todo.description = data.get('description', todo.description)
+    todo.is_complete = data.get('is_complete', todo.is_complete)
+    db.session.commit()
+    return jsonify({'message': 'ToDo updated successfully.'})
+
+@app.route('/todos/<int:todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
+    todo = ToDo.query.get_or_404(todo_id)
+    db.session.delete(todo)
+    db.session.commit()
+    return jsonify({'message': 'ToDo deleted successfully.'})
+
 
 @app.route('/sessions/start', methods=['POST'])
 def start_session():
