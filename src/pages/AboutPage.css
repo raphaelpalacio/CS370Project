@@ -1,0 +1,66 @@
+/* Apply styles only within the .about-us-page container */
+.about-us-page .about-us-container {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-us-page .about-us-title {
+  margin-bottom: 1em;
+}
+
+.about-us-page .profiles-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.about-us-page .profile-card {
+  width: 300px;
+  margin: 1em;
+  padding: 1em;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.about-us-page .profile-image-container {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 1em;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.about-us-page .profile-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about-us-page .profile-info input[type="text"] {
+  width: 100%;
+  padding: 0.5em;
+  margin: 0.5em 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.about-us-page .profile-info input[type="file"] {
+  margin: 1em 0;
+}
+
+.about-us-page {
+  padding-top: 50px; /* Adjust this value as needed to move everything down */
+}
+
+/* If you only want to move the text down, you could apply the padding to the paragraphs directly */
+.about-us-page p {
+  padding-top: 20px; /* Adjust this value as needed to move text down */
+}
+
+/* If you want to apply it to the cards as well */
+.profile-card {
+  margin-top: 20px; /* Adjust this value as needed to move cards down */
+}

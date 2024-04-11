@@ -460,6 +460,7 @@ def auth0_callback():
     Here, you would typically check if the user exists in your database,
     create a new user if necessary, and establish a session or token for your app.
     """
+    
     # Decode the token to get user info
     user_info = verify_decode_jwt(id_token)
     if not user_info:
