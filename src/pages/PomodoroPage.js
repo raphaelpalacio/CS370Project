@@ -29,7 +29,7 @@ const PomodoroPage = () => {
         </div>
 
         {/* TodoWrapper component */}
-        <div className="overflow-y-auto h-1/2">
+        <div className="overflow-y-auto p-4 h-1/2">
           <TodoWrapper />
         </div>
       </div>
