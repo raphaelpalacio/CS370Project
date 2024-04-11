@@ -43,7 +43,7 @@ export const TodoWrapper = () => {
 
   return (
     <div className="TodoWrapper">
-      <h1>My Task for Today</h1>
+      <h2>My Tasks for Today</h2>
       <TodoForm addTodo={addTodo} />
       {/* display todos */}
       {todos.map((todo) =>
