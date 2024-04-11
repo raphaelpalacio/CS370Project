@@ -2,10 +2,12 @@ from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from datetime import datetime
 from jose import jwt
 import json
 from urllib.request import urlopen
+from dotenv import load_dotenv
 import uuid
 import sqlite3
 import os
@@ -85,6 +87,24 @@ def verify_decode_jwt(token):
             abort(401, description="Unable to parse authentication token.")
     abort(401, description="Unable to find appropriate key.")
 
+def current_user():
+    # Attempt to retrieve user ID from session first
+    user_id = session.get('user_id')
+    
+    # If not found in session, decode the JWT token to get the user ID
+    if not user_id:
+        token = get_token_auth_header()
+        if not token:
+            abort(401, description="No authorization token found")
+        try:
+            payload, _ = verify_decode_jwt(token)
+            user_id = payload.get('sub')  # 'sub' is typically the user ID in JWT
+        except Exception as e:
+            print(str(e))  # For debugging purposes
+            abort(401, description="Could not verify the user token")
+    
+    return user_id
+
 def is_token_blacklisted(token):
     return token in blacklisted_tokens
     # You would need to create a storage mechanism for the blacklisted tokens
@@ -102,6 +122,19 @@ class User(db.Model):
     # Many-to-Many Relationship with StudyGroup
     study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
                                    back_populates='members')
+
+class ToDo(db.Model):
+    __tablename__ = 'todo'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    is_complete = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+
+    def __repr__(self):
+        return '<ToDo %r>' % self.title
 class Session(db.Model):
     __tablename__ = 'session'
     sID = db.Column(db.Integer, primary_key=True)
@@ -181,6 +214,45 @@ ChannelMessage = db.Table('ChannelMessage',
 @app.route('/')
 def index():
     return "Welcome to the Pomodoro API!"
+
+@app.route('/todos', methods=['GET'])
+def get_todos():
+    user_sub = current_user()  # This is the unique identifier for the user.
+    user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
+
+    if not user:
+        return jsonify({'message': 'User not found.'}), 404
+
+    todos = ToDo.query.filter_by(user_id=user.uID).all()
+    return jsonify([{'id': todo.id, 'title': todo.title, 'description': todo.description, 'is_complete': todo.is_complete} for todo in todos])
+
+
+@app.route('/todos', methods=['POST'])
+def add_todo():
+    user_id = current_user()
+    data = request.json
+    new_todo = ToDo(title=data['title'], description=data['description'], user_id=user_id)
+    db.session.add(new_todo)
+    db.session.commit()
+    return jsonify({'message': 'ToDo created successfully.'}), 201
+
+@app.route('/todos/<int:todo_id>', methods=['PUT'])
+def update_todo(todo_id):
+    todo = ToDo.query.get_or_404(todo_id)
+    data = request.json
+    todo.title = data.get('title', todo.title)
+    todo.description = data.get('description', todo.description)
+    todo.is_complete = data.get('is_complete', todo.is_complete)
+    db.session.commit()
+    return jsonify({'message': 'ToDo updated successfully.'})
+
+@app.route('/todos/<int:todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
+    todo = ToDo.query.get_or_404(todo_id)
+    db.session.delete(todo)
+    db.session.commit()
+    return jsonify({'message': 'ToDo deleted successfully.'})
+
 
 @app.route('/sessions/start', methods=['POST'])
 def start_session():
@@ -358,6 +430,65 @@ def spotify_callback():
     session['refresh_token'] = refresh_token
 
     # Redirect to a page where you want the user to go next
+    return redirect('/homePage')
+
+
+@app.route('/auth/callback')
+def auth0_callback():
+    code = request.args.get('code')
+    if not code:
+        return "Error: No code returned from Auth0.", 400
+
+    token_url = f'https://{AUTH0_DOMAIN}/oauth/token'
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    payload = {
+        'grant_type': 'authorization_code',
+        'client_id': AUTH0_CLIENT_ID,
+        'client_secret': os.getenv('AUTH0_CLIENT_SECRET'),
+        'code': code,
+        'redirect_uri': os.getenv('AUTH0_CALLBACK_URL')
+    }
+
+    response = requests.post(token_url, data=payload, headers=headers)
+    tokens = response.json()
+    id_token = tokens.get('id_token')
+
+    # Optionally, verify the token, extract user information
+    user_info = verify_decode_jwt(id_token)
+
+    """
+    Here, you would typically check if the user exists in your database,
+    create a new user if necessary, and establish a session or token for your app.
+    """
+    
+    # Decode the token to get user info
+    user_info = verify_decode_jwt(id_token)
+    if not user_info:
+        return "Error: Unable to verify user information.", 400
+
+    # Extract email or other unique identifier from user_info
+    email = user_info.get('email')
+    if not email:
+        return "Error: Email not provided by Auth0.", 400
+
+    # Check if user exists in your database
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        # Create a new user if it does not exist
+        user = User(
+            username=user_info.get('nickname', email.split('@')[0]),  # Example username
+            email=email,
+            password='',  # You might not store a password since authentication is handled by Auth0
+            updated_at=datetime.utcnow(),
+            role=1  # Example role, adjust as necessary
+        )
+        db.session.add(user)
+        db.session.commit()
+    else:
+        # Update existing user's last login or other relevant fields
+        user.updated_at = datetime.utcnow()
+        db.session.commit()
+    # Redirect to home screen or dashboard after successful authentication
     return redirect('/homePage')
 
 # Make sure to set a secret key for sessions to work
