@@ -23,6 +23,7 @@
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   text-align: center;
+  position: relative;
 }
 
 .about-us-page .profile-image-container {
@@ -31,13 +32,14 @@
   margin: 0 auto 1em;
   overflow: hidden;
   border-radius: 50%;
+  
 }
 
 .about-us-page .profile-image {
   width: 100%;
   height: auto;
   display: block;
-}
+} 
 
 .about-us-page .profile-info input[type="text"] {
   width: 100%;
