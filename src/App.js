@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
@@ -7,7 +12,7 @@ import PomodoroPage from "./pages/PomodoroPage"; // Assuming you have a Pomodoro
 import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
-  const { isLoading, error } = useAuth0();
+  const { isLoading, error, isAuthenticated } = useAuth0();
 
   if (error) {
     return <p>Authentication Error: {error.message}</p>;
@@ -37,7 +42,10 @@ function App() {
             </div>
           }
         />
-        <Route path="/pomodoro" element={<PomodoroPage />} />
+        <Route
+          path="/pomodoro"
+          element={isAuthenticated ? <PomodoroPage /> : <Navigate to="/" />}
+        />
       </Routes>
     </Router>
   );

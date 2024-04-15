@@ -7,13 +7,12 @@ const AboutPage = () => {
     { id: 1, 
      name: 'Alejandro Pacheco',
      hometown: 'Miami, FL', 
-     major: 'Computer Science B.S. // Business Minor', 
+     major: 'Computer Science B.A. // Business Minor', 
      graduatingClass: 'Class of 2025',
      image: '/alejandro.jpg',
      linkedin: 'https://www.linkedin.com/in/alejandro-pacheco03/'
     },
 
-    
     { id: 2, 
     name: 'Andrew Chang', 
     hometown: 'San Diego, CA',  
@@ -90,15 +89,24 @@ const AboutPage = () => {
 
         {/* Profiles section */}
         <div className="profiles-container">
-          {profiles.map(profile => (
+          {profiles.map((profile) => (
             <div key={profile.id} className="profile-card">
-              <img src={profile.image} alt={profile.name} className="profile-image"/>
-              <h2>{profile.name}</h2>
+              <img
+                src={profile.image}
+                alt={profile.name}
+                className="profile-image"
+              />
+              <div className="profile-name">{profile.name}</div>
               <p>Hometown: {profile.hometown}</p>
               <p>Major: {profile.major}</p>
               <p>Graduating Class: {profile.graduatingClass}</p>
               {profile.linkedin && (
-                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="linkedin-link">
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="linkedin-link"
+                >
                   LinkedIn
                 </a>
               )}
