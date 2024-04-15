@@ -1,5 +1,6 @@
 import React from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
+import { Alarm } from "./Alarm/Alarm";
 
 const PomodoroPage = () => {
   return (
@@ -37,8 +38,7 @@ const PomodoroPage = () => {
       {/* Main content area with bottom bar */}
       <div className="w-4/5 flex flex-col bg-gray-100 h-screen">
         <div className="flex-1 p-4 overflow-auto">
-          {/* Main content goes here */}
-          filler text
+          <Alarm />
         </div>
         <div className="h-1/5 bg-gray-300 p-4">
           {/* Bottom bar content goes here */}

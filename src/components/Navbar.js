@@ -25,6 +25,9 @@ const Navbar = () => {
         Pomodoro Plus
       </Link>
       <ul className="hidden md:flex items-center">
+      <li className="p-4">
+          <Link to="/">Profile</Link>
+        </li>
         <li className="p-4">
           <Link to="/">Home</Link>
         </li>
@@ -48,6 +51,9 @@ const Navbar = () => {
             : "ease-in-out duration-500 fixed left-[-100%]"
         }
       >
+        <li className="p-4 border-b border-gray-600">
+          <Link to="/profile">Profile</Link>
+        </li>
         <li className="p-4 border-b border-gray-600">
           <Link to="/">Home</Link>
         </li>
