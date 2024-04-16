@@ -17,7 +17,7 @@ if (rootElement) {
       <Auth0Provider
         domain={domain}
         clientId={clientId}
-        redirectUri={window.location.origin as string}
+        //redirectUri={window.location.origin as string}
       >
         <App />
       </Auth0Provider>
