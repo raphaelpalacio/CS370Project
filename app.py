@@ -1,5 +1,13 @@
 from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey, Table
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base
+
+from datetime import datetime
+
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -18,7 +26,9 @@ CORS(app)
 bcrypt = Bcrypt(app)
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:W3ddings@localhost/pomodoroplus-db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize DB
@@ -38,6 +48,101 @@ SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'  # Make sure to add this in your Spotify app settings
 SPOTIFY_SCOPES = 'user-read-playback-state user-modify-playback-state'  # Example scopes
+
+"""
+# Make all of the tables straight to SQL to PGAdmin
+Base = declarative_base()
+
+# Association table for Users and Study Groups
+StudyGroupMember = Table('StudyGroupMember', Base.metadata,
+    Column('uID', Integer, ForeignKey('user.uID'), primary_key=True),
+    Column('sgID', Integer, ForeignKey('study_group.sgID'), primary_key=True)
+)
+
+# Association table for Study Groups and Channels
+StudyGroupChannel = Table('StudyGroupChannel', Base.metadata,
+    Column('sgID', Integer, ForeignKey('study_group.sgID'), primary_key=True),
+    Column('cID', Integer, ForeignKey('channel.cID'), primary_key=True)
+)
+
+# Association table for Channels and Messages
+ChannelMessage = Table('ChannelMessage', Base.metadata,
+    Column('cID', Integer, ForeignKey('channel.cID'), primary_key=True),
+    Column('mID', Integer, ForeignKey('message.mID'), primary_key=True)
+)
+
+class User(Base):
+    __tablename__ = 'user'
+    uID = Column(Integer, primary_key=True)
+    username = Column(String(40), unique=True, nullable=False)
+    email = Column(String(254), unique=True, nullable=False)
+    password = Column(String(60), nullable=False)
+    updated_at = Column(DateTime, nullable=True)
+    role = Column(Integer, nullable=False)
+    study_groups = relationship('StudyGroup', secondary=StudyGroupMember, back_populates='members')
+
+class ToDo(Base):
+    __tablename__ = 'todo'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(100), nullable=False)
+    description = Column(String(255))
+    is_complete = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, onupdate=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey('user.uID'), nullable=False)
+
+class Session(Base):
+    __tablename__ = 'session'
+    sID = Column(Integer, primary_key=True)
+    uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=True)
+    duration = Column(Integer, nullable=True)
+    status = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Playlist(Base):
+    __tablename__ = 'playlist'
+    pID = Column(Integer, primary_key=True)
+    uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    playlist_name = Column(String(50), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Channel(Base):
+    __tablename__ = 'channel'
+    cID = Column(Integer, primary_key=True)
+    creatorID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    channel_name = Column(String(50), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=True)
+    study_groups = relationship('StudyGroup', secondary=StudyGroupChannel, back_populates='channels')
+    messages = relationship('Message', secondary=ChannelMessage, back_populates='channels')
+
+class Message(Base):
+    __tablename__ = 'message'
+    mID = Column(Integer, primary_key=True)
+    senderID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    text = Column(String(500), nullable=False)
+    sent_at = Column(DateTime, default=datetime.utcnow)
+    edited_at = Column(DateTime, nullable=True)
+    channels = relationship('Channel', secondary=ChannelMessage, back_populates='messages')
+
+class StudyGroup(Base):
+    __tablename__ = 'study_group'
+    sgID = Column(Integer, primary_key=True)
+    creatorID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    group_name = Column(String(50), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime)
+    members = relationship('User', secondary=StudyGroupMember, back_populates='study_groups')
+    channels = relationship('Channel', secondary=StudyGroupChannel, back_populates='study_groups')
+
+# Setup the database connection and engine
+engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db')
+Base.metadata.create_all(bind=engine)
+
+
+"""
 
 
 # Helper Functions
@@ -495,5 +600,6 @@ app.secret_key = 'your_secret_key'
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Ensures tables are created before the first request if they don't exist
+        db.create_all()
+    #Base.metadata.create_all(bind=db.engine)  # Ensures tables are created before the first request if they don't exist
     app.run(debug=True)
