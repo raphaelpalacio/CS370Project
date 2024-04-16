@@ -31,8 +31,13 @@ bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:W3ddings@localhost/pomodoroplus-db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
+
 # Initialize DB
 db = SQLAlchemy(app)
+
+# Initialize Migrate
+migrate = Migrate(app, db)
 
 # Load environment variables
 load_dotenv()
@@ -49,6 +54,7 @@ SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'  # Make sure to add this in your Spotify app settings
 SPOTIFY_SCOPES = 'user-read-playback-state user-modify-playback-state'  # Example scopes
 
+"""
 """
 # Make all of the tables straight to SQL to PGAdmin
 Base = declarative_base()
@@ -142,7 +148,7 @@ engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db
 Base.metadata.create_all(bind=engine)
 
 
-"""
+
 
 
 # Helper Functions
@@ -601,5 +607,8 @@ app.secret_key = 'your_secret_key'
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        migrate = Migrate(app, db)
     #Base.metadata.create_all(bind=db.engine)  # Ensures tables are created before the first request if they don't exist
     app.run(debug=True)
+
+
