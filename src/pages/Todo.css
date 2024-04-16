@@ -19,10 +19,10 @@ h1 {
 
 .TodoWrapper {
   background: #1a1a40;
-  margin-top: 2rem; 
-  padding: 1rem; 
+  margin-top: 2rem; /* Adjusted for better responsiveness */
+  padding: 1rem; /* Adjusted padding */
   border-radius: 5px;
-  position: relative; 
+  position: relative; /* Changed from absolute to relative for better layout flow */
 }
 
 .TodoForm {
@@ -37,7 +37,7 @@ h1 {
   padding: 0.5rem 1rem;
   margin-top: 1rem;
   margin-bottom: 2rem;
-  width: 80%; /* play with this */
+  width: 80%; /* Responsive width */
   color: #e8dddd;
 }
 
@@ -84,6 +84,7 @@ h1 {
   cursor: pointer;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .TodoWrapper {
     margin-top: 1rem;
@@ -91,10 +92,66 @@ h1 {
   }
 
   .todo-input {
-    width: 90%; 
+    width: 90%; /* More width for smaller devices */
   }
 
   h1 {
-    font-size: 1.5rem; 
+    font-size: 1.5rem; /* Smaller text for smaller screens */
   }
+}
+
+.FullHeightTodoWrapper {
+  height: 100%;
+  overflow-y: auto; /* Allows scrolling within the TodoWrapper */
+}
+
+.TodoWrapper {
+  background: #1a1a40;
+  padding: 2rem;
+  border-radius: 5px;
+  height: 100%; /* Makes TodoWrapper fill the FullHeightTodoWrapper */
+}
+
+/* Ensures text inside TodoWrapper is white */
+.TodoWrapper,
+.TodoWrapper h1,
+.TodoWrapper p {
+  color: #ffffff; /* Makes text color white */
+}
+
+.TodoForm {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Other styles remain the same */
+
+.TodoForm {
+  display: flex; /* Aligns children (input and button) inline */
+  justify-content: space-between; /* Puts maximum space between children */
+  width: 100%; /* Take the full width of its parent */
+  margin-bottom: 1rem; /* Keeps space below the form */
+}
+
+.todo-input {
+  outline: none;
+  background: none;
+  border: 1px solid #5624d4;
+  padding: 0.5rem 1rem;
+  width: 80%; /* Adjust width to leave space for button */
+  color: #e8dddd;
+  margin-right: 10px; /* Adds some space between the input and the button */
+}
+
+.todo-btn {
+  background: #8758ff;
+  color: #fff;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  /* No width specified here, it will take the space needed for its content */
+}
+
+.task-title {
+  font-size: 20px;
 }
