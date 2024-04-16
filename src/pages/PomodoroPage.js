@@ -1,11 +1,12 @@
 import React from "react";
-import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
+import { TodoWrapper } from "./TodoWrapper";
+import ChatComponent from "./ChatComponent"; // Import the ChatComponent
 
 const PomodoroPage = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className="w-1/5 bg-gray-800 text-white h-full">
-        {/* Channels Section */}
+      <div className="w-1/5 bg-gray-800 text-white h-full"> 
+        {/* channels section */}
         <div className="overflow-y-auto p-4 h-1/2">
           <div className="bg-gray-700 p-4 rounded-lg mb-4">
             <h2 className="font-bold">Channels</h2>
@@ -27,22 +28,19 @@ const PomodoroPage = () => {
             </ul>
           </div>
         </div>
-
-        {/* TodoWrapper component */}
+        {/* todo component (mostly done) */}
         <div className="overflow-y-auto h-1/2">
           <TodoWrapper />
         </div>
       </div>
-
-      {/* Main content area with bottom bar */}
+      {/* spotify bar (are we doing this?) */}
       <div className="w-4/5 flex flex-col bg-gray-100 h-screen">
-        <div className="flex-1 p-4 overflow-auto">
-          {/* Main content goes here */}
-          filler text
+        <div className="flex-1 p-4 mt-24 overflow-auto">
+          {" "}
+          <ChatComponent /> 
         </div>
         <div className="h-1/5 bg-gray-300 p-4">
-          {/* Bottom bar content goes here */}
-          Bottom Bar Content
+          Bottom Bar works
         </div>
       </div>
     </div>
