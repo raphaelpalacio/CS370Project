@@ -5,6 +5,7 @@ import PauseButton from "./PauseButton";
 import SettingsButton from "./SettingsButton";
 import {useContext, useState, useEffect, useRef} from "react";
 import SettingsContext from "./SettingsContext";
+import './Timer.css';
 
 const red = '#f54e4e';
 const green = '#4aec8c';
@@ -66,7 +67,8 @@ function Timer() {
   if(seconds < 10) seconds = '0'+seconds;
 
   return (
-    <div>
+    <div className="progressbar-container">
+      <div className="progressbar-content">
       <CircularProgressbar
         value={percentage}
         text={minutes + ':' + seconds}
@@ -83,6 +85,7 @@ function Timer() {
       <div style={{marginTop:'20px'}}>
         <SettingsButton onClick={() => settingsInfo.setShowSettings(true)} />
       </div>
+    </div>
     </div>
   );
 }

@@ -1,0 +1,11 @@
+.progressbar-container {
+    width: 300px; /* Adjust this value to make the progress bar smaller */
+    height: 300px; /* Adjust this value to make the progress bar smaller */
+    text-align: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.progressbar-content {
+    text-align: center;
+  }

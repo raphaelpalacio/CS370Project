@@ -16,8 +16,8 @@ function Settings() {
         className={'slider'}
         thumbClassName={'thumb'}
         trackClassName={'track'}
-        value={settingsInfo.workMinutes}
-        onChange={newValue => settingsInfo.setWorkMinutes(newValue)}
+        value={workMinutes}
+        onChange={newValue => setWorkMinutes(newValue)}
         min={1}
         max={120}
       />
@@ -26,13 +26,13 @@ function Settings() {
         className={'slider green'}
         thumbClassName={'thumb'}
         trackClassName={'track'}
-        value={settingsInfo.breakMinutes}
-        onChange={newValue => settingsInfo.setBreakMinutes(newValue)}
+        value={breakMinutes}
+        onChange={newValue => setBreakMinutes(newValue)}
         min={1}
         max={120}
       />
       <div style={{textAlign:'center', marginTop:'20px'}}>
-        <BackButton onClick={() => settingsInfo.setShowSettings(false)} />
+        <BackButton onClick={() => setShowSettings(false)} />
       </div>
 
     </div>
