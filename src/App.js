@@ -47,7 +47,7 @@ function App() {
         <Route
           path="/pomodoro"
           element={
-            <div className="pt-20">
+            <div >
               <PomodoroPage />
             </div>
           }
