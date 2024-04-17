@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
-import Timer from "./Alarm/Timer";
+import Function from "./Alarm/TimerFunction";
+
 
 const PomodoroPage = () => {
+
+  const [completedPomodoros, setCompletedPomodoros] = useState(0);
+
+  const handlePomodoroComplete = () => {
+    setCompletedPomodoros(prevCount => prevCount + 1);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       <div className="w-1/5 bg-gray-700 text-white h-full">
@@ -39,10 +47,13 @@ const PomodoroPage = () => {
       <div className="w-4/5 flex flex-col bg-gray-700 h-screen">
         
       <div className="h-1/5 bg-gray-700 p-4">
-          <Timer />
+          <Function />
         </div>
 
-        
+        <div className="text-white">
+          Completed Sessions: {completedPomodoros}
+        </div>
+
       </div>
     </div>
   );

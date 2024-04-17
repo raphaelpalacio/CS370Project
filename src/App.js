@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import PomodoroPage from "./pages/PomodoroPage"; // Assuming you have a PomodoroPage component
+//import ProfilePage from "./pages/Profile/container/ProfilePage";
 //import ProfilePage from './pages/ProfilePage';
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -53,6 +54,7 @@ function App() {
           }
           //element={isAuthenticated ? <PomodoroPage /> : <Navigate to="/" />}
         />
+        
       </Routes>
     </Router>
   );

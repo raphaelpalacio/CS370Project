@@ -1,7 +1,7 @@
 import react from 'react';
 
 const SettingsContext = react.createContext({
-  workMinutes: 25,
+  workMinutes: 1,
   breakMinutes: 5,
   setShowSettings: () => {}, // Placeholder function
   setWorkMinutes: () => {}, // Placeholder function

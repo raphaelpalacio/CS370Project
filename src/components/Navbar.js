@@ -26,7 +26,7 @@ const Navbar = () => {
       </Link>
       <ul className="hidden md:flex items-center">
       <li className="p-4">
-          <Link to="/">Profile</Link>
+          <Link to="/profilepage">Profile</Link>
         </li>
         <li className="p-4">
           <Link to="/">Home</Link>
@@ -37,6 +37,7 @@ const Navbar = () => {
         <li className="p-4">
           <Link to="/pomodoro">Pomodoro</Link>
         </li>
+
         <li className="p-4 cursor-pointer" onClick={handleSignInOut}>
           {isAuthenticated ? "Sign Out" : "Sign In"}
         </li>
