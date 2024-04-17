@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
 import Function from "./Alarm/TimerFunction";
-
+import SettingsContext from "./Alarm/SettingsContext";
 
 const PomodoroPage = () => {
 
-  const [completedPomodoros, setCompletedPomodoros] = useState(0);
+  const [completedPomodoros, setCompletedPomodoros] = useState(0); // State for completedPomodoros
+  const [showSettings, setShowSettings] = useState(false);
+  const [workMinutes, setWorkMinutes] = useState(45);
+  const [breakMinutes, setBreakMinutes] = useState(15);
+  const [sessionCount, setSessionCount] = useState(0);
 
-  const handlePomodoroComplete = () => {
+  // Function to increment completedPomodoros
+  const incrementCompletedPomodoros = () => {
     setCompletedPomodoros(prevCount => prevCount + 1);
   };
+
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -46,13 +52,23 @@ const PomodoroPage = () => {
       {/* Main content area with bottom bar */}
       <div className="w-4/5 flex flex-col bg-gray-700 h-screen">
         
+        <SettingsContext.Provider value={{
+        showSettings,
+        setShowSettings,
+        workMinutes,
+        breakMinutes,
+        setWorkMinutes,
+        setBreakMinutes,
+        sessionCount,
+        setSessionCount
+      }}>
       <div className="h-1/5 bg-gray-700 p-4">
           <Function />
         </div>
-
         <div className="text-white">
-          Completed Sessions: {completedPomodoros}
+          Completed Sessions: {sessionCount}
         </div>
+        </SettingsContext.Provider>
 
       </div>
     </div>

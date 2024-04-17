@@ -25,11 +25,14 @@ function Timer() {
   function tick() {
     secondsLeftRef.current--;
     setSecondsLeft(secondsLeftRef.current);
+    console.log(secondsLeftRef.current)
   }
 
   useEffect(() => {
 
     function switchMode() {
+      if (modeRef.current === 'work') settingsInfo.setSessionCount(settingsInfo.sessionCount + 1)
+      
       const nextMode = modeRef.current === 'work' ? 'break' : 'work';
       const nextSeconds = (nextMode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60;
 
