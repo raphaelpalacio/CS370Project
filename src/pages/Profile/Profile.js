@@ -3,26 +3,15 @@ import './Profile.css';
 import EditableUserProfile from './components/EditableUserProfile';
 import UserProfile from './components/UserProfile';
 
-const animals = [
-    "Aardvark",
-    "Albatross",
-    "Alpaca",
-    "Alligator",
-    "Anchovie",
-    "Angelfish",
-    "Ant",
-    "Antelope",
-    "Armadillo",
-    "Aurochs",
-    "Axolotl"
-]
+
+
 
 function randomColor() {
     return "#" + Math.floor(Math.random()*16777215).toString(16);
 }
 
 function randomName() {
-    return "Anonymous " + animals[Math.floor(Math.random() * animals.length)]
+    return "Set You Name " 
 }
 
 

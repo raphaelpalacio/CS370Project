@@ -1,7 +1,11 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import Group from './Group';
-import ColorBox from './ColorBox';
 import { months, calcButtonTextColor } from '../tools';
+import SettingsContext from './SettingsContext'; // Import SettingsContext
+import React, { useContext } from 'react';
+import "./UserProfile.css";
+
+
 
 export default function EditableUserProfile({
     stored,
@@ -14,6 +18,8 @@ export default function EditableUserProfile({
         backgroundColor: stored.color,
         color: calcButtonTextColor(stored.color)
     };
+    const { sessionCount } = useContext(SettingsContext); // Get session count from context
+
 
     return <div>
         <Group>
@@ -22,6 +28,15 @@ export default function EditableUserProfile({
         <Group>
             <h2>Birthday:</h2> {months.getShortName(stored.month)} {stored.day}
         </Group>
+
+        <Group>
+            <h2>Total sessions:</h2> {sessionCount}
+        </Group>
+
+        <Group>
+            <h2>Total hours:</h2> {sessionCount}
+        </Group>
+
         <Group>
             <button
                 style={buttonStyle}

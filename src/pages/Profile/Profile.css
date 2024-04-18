@@ -1,7 +1,8 @@
 div.container {
-  height: 100%;
-  display: grid;
-  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Optionally, you can set a specific height */
 }
 
 div.App {
