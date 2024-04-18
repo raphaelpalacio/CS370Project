@@ -15,16 +15,9 @@ function Function() {
 
   return (
     <main>
-      {/* <SettingsContext.Provider value={{
-        showSettings,
-        setShowSettings,
-        workMinutes,
-        breakMinutes,
-        setWorkMinutes,
-        setBreakMinutes,
-      }}> */}
+      {}
         {settingsInfo.showSettings ? <Settings /> : <Timer />}
-      {/* </SettingsContext.Provider> */}
+      {}
     </main>
   );
 }
