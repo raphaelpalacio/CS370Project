@@ -5,7 +5,7 @@ function SettingsButton() {
   const { setShowSettings } = useContext(SettingsContext);
 
   const handleClick = () => {
-    setShowSettings(true); // Update the state to show settings
+    setShowSettings((prevShowSettings) => !prevShowSettings); // Update the state to show settings
   };
 
   return (
