@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
+import ChatComponent from "./ChatComponent"; // Import the ChatComponent
+import Timer from "./Alarm/Timer"; // Ensure this path is correct
 import Function from "./Alarm/TimerFunction";
 import SettingsContext from "./Alarm/SettingsContext";
 
@@ -19,9 +21,9 @@ const PomodoroPage = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className="w-1/5 bg-gray-700 text-white h-full">
-        {/* Channels Section */}
-        <div className="overflow-y-auto p-4 h-1/2">
+      <div className="w-1/5 bg-gray-800 text-white h-full">
+        {/* Channels section */}
+        <div className="overflow-y-auto p-4 mt-20 h-1/2">
           <div className="bg-gray-800 p-4 rounded-lg mb-4">
             <h2 className="font-bold">Channels</h2>
             <ul>
@@ -42,9 +44,8 @@ const PomodoroPage = () => {
             </ul>
           </div>
         </div>
-
-        {/* TodoWrapper component */}
-        <div className="overflow-y-auto p-4 h-1/2">
+        {/* Todo component */}
+        <div className="overflow-y-auto h-1/2">
           <TodoWrapper />
         </div>
       </div>

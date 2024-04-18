@@ -8,7 +8,7 @@ from sqlalchemy.orm import declarative_base
 
 from datetime import datetime
 
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from datetime import datetime
@@ -30,6 +30,7 @@ bcrypt = Bcrypt(app)
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:W3ddings@localhost/pomodoroplus-db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 
@@ -229,12 +230,14 @@ def get_todos():
 
 
 @app.route('/todos', methods=['POST'])
+@cross_origin()
 def add_todo():
     user_id = current_user()
     data = request.json
     new_todo = ToDo(title=data['title'], description=data['description'], user_id=user_id)
     db.session.add(new_todo)
     db.session.commit()
+    print("hello world"),
     return jsonify({'message': 'ToDo created successfully.'}), 201
 
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
@@ -246,6 +249,13 @@ def update_todo(todo_id):
     todo.is_complete = data.get('is_complete', todo.is_complete)
     db.session.commit()
     return jsonify({'message': 'ToDo updated successfully.'})
+
+@app.route('/todos/togglecomplete/<int:todo_id>', methods=['PUT'])
+def toggle_complete(todo_id):
+    todo = ToDo.query.get_or_404(todo_id)
+    todo.is_complete = not todo.is_complete
+    db.session.commit()
+    return jsonify({'message': 'ToDo complete toggle successfully.'})
 
 @app.route('/todos/<int:todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):

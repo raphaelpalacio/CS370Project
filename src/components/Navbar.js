@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
+
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -24,21 +25,20 @@ const Navbar = () => {
       <Link to="/" className="text-3xl font-bold">
         Pomodoro Plus
       </Link>
-      <ul className="hidden md:flex items-center">
-      <li className="p-4">
-          <Link to="/profilepage">Profile</Link>
-        </li>
-        <li className="p-4">
+      <ul className="hidden md:flex items-center ">
+        <li className="p-4 hover:text-purple-700">
           <Link to="/">Home</Link>
         </li>
-        <li className="p-4">
+        <li className="p-4 hover:text-purple-700">
           <Link to="/about">About Us</Link>
         </li>
-        <li className="p-4">
+        <li className="p-4 hover:text-purple-700">
           <Link to="/pomodoro">Pomodoro</Link>
         </li>
-
-        <li className="p-4 cursor-pointer" onClick={handleSignInOut}>
+        <li className="p-4 hover:text-purple-700">
+          <Link to="/">Profile</Link>
+        </li>
+        <li className="p-4 cursor-pointer hover:text-purple-700" onClick={handleSignInOut}>
           {isAuthenticated ? "Sign Out" : "Sign In"}
         </li>
       </ul>

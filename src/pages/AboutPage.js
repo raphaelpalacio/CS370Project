@@ -65,7 +65,7 @@ const AboutPage = () => {
   ]);
   return (
     <section className="bg-white text-black">
-      <div className="about-us-page">
+      <div className="about-us-page mx-20">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">
           About Pomodoro Plus
         </h1>
