@@ -11,7 +11,7 @@ export default function HomePage() {
   };
 
   return (
-    <section className="w-full py-12">
+    <section className="w-full py-12" style={{ backgroundColor: 'white' }}>
       <div className="container px-4 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
           <img

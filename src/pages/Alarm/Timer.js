@@ -70,6 +70,8 @@ function Timer() {
   if(seconds < 10) seconds = '0'+seconds;
 
   return (
+    <div className="timer-container" style={{ marginTop: '50px' }}> {/* Adjust marginTop as needed */}
+
     <div className="progressbar-container">
       <div className="progressbar-content">
       <CircularProgressbar
@@ -88,6 +90,7 @@ function Timer() {
       <div style={{marginTop:'20px'}}>
         <SettingsButton onClick={() => settingsInfo.setShowSettings(true)} />
       </div>
+    </div>
     </div>
     </div>
   );
