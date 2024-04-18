@@ -36,7 +36,7 @@ const Navbar = () => {
           <Link to="/pomodoro">Pomodoro</Link>
         </li>
         <li className="p-4 hover:text-purple-700">
-          <Link to="/">Profile</Link>
+          <Link to="/profilepage">Profile</Link>
         </li>
         <li className="p-4 cursor-pointer hover:text-purple-700" onClick={handleSignInOut}>
           {isAuthenticated ? "Sign Out" : "Sign In"}
