@@ -5,7 +5,7 @@ import App from "./App";
 import { Auth0Provider } from "@auth0/auth0-react";
 
 // Assuming your environment variables are strings, define their types.
-const domain: string = process.env.REACT_APP_AUTH0_DOMAIN || "";
+const domain: string = process.env.AUTH0_DOMAIN || "";
 const clientId: string = process.env.REACT_APP_AUTH0_CLIENT_ID || "";
 
 const rootElement = document.getElementById("root");
@@ -15,9 +15,11 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       <Auth0Provider
-        domain={domain}
-        clientId={clientId}
-        //redirectUri={window.location.origin as string}
+        domain={"dev-otrfj0d3n15cdjdz.us.auth0.com"}
+        clientId={"VtG0vhD2r0csHQ5rRKszfQin8Qm7yuWd"}
+        authorizationParams={{
+          redirect_uri: window.location.origin
+        }}
       >
         <App />
       </Auth0Provider>
