@@ -4,34 +4,29 @@ import { TodoForm } from "./TodoForm";
 import { v4 as uuidv4 } from "uuid";
 import { EditTodoForm } from "./EditTodoForm";
 import "./Todo.css";
+import axios from 'axios';
 
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState([]);
-
+  //const axios = require('axios');
+  
   const addTodo = (todo) => {
     setTodos([
       ...todos,
       { id: uuidv4(), task: todo, completed: false, isEditing: false },
     ]);
-    const todoData = {
-      title: todo,
-      description: "",
-    };
-    fetch("http://localhost:5000/todos",
-      {
-        method: "POST", 
-        headers: {
-          'Content-Type' : 'application/json',
-          'Access-Control-Allow-Origin' :  '*'
-        },
-        body: JSON.stringify(todoData),
-      }
-    ).then((res) => 
-      res.json().then((data) => {
-        console.log(data);
-      })
-    );
+      
+    const res = axios({
+      method: 'post',
+      url:"http://localhost:5000/todos",
+      params:{
+        title: todo,
+        description: "",
+      },
+  
+    });
+    console.log(res.data)
     
   };
 
