@@ -113,17 +113,18 @@ def is_token_blacklisted(token):
 blacklisted_tokens = set()
 
 # Models
+
 class User(db.Model):
     __tablename__ = 'user'
     uID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
     email = db.Column(db.String(254), unique=True, nullable=False)  # 254 character limit
-    password = db.Column(db.String(60), nullable=False)  # Bcrypt hashes are 60 chars
     updated_at = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.Integer, nullable=False)
     # Many-to-Many Relationship with StudyGroup
     study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
                                    back_populates='members')
+
 
 class ToDo(db.Model):
     __tablename__ = 'todo'
@@ -294,8 +295,7 @@ def session_history():
 @app.route('/users/register', methods=['POST'])
 def register_user():
     data = request.json
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(username=data['username'], email=data['email'], password=hashed_password, updated_at=datetime.now(), role=1)
+    new_user = User(username=data['username'], email=data['email'], updated_at=datetime.now(), role=1)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
