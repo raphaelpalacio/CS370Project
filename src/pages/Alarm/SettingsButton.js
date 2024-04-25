@@ -5,7 +5,10 @@ function SettingsButton() {
   const { setShowSettings } = useContext(SettingsContext);
   const buttonRef = useRef(null);
   const [fontSize, setFontSize] = useState(16); // Initial font size
-
+  
+  const handleClick = () => {
+    setShowSettings((prevShowSettings) => !prevShowSettings); // Update the state to show settings
+  };
   // Adjust font size dynamically based on button width
   useEffect(() => {
     const buttonWidth = buttonRef.current.offsetWidth;
