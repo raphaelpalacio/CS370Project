@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request, abort, session, redirect
+from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
@@ -216,7 +218,9 @@ ChannelMessage = db.Table('ChannelMessage',
 def index():
     return "Welcome to the Pomodoro API!"
 
+#NEW
 @app.route('/todos', methods=['GET'])
+@cross_origin()  # Enable CORS on this route for all domains
 def get_todos():
     user_sub = current_user()  # This is the unique identifier for the user.
     user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
@@ -225,7 +229,25 @@ def get_todos():
         return jsonify({'message': 'User not found.'}), 404
 
     todos = ToDo.query.filter_by(user_id=user.uID).all()
-    return jsonify([{'id': todo.id, 'title': todo.title, 'description': todo.description, 'is_complete': todo.is_complete} for todo in todos])
+    return jsonify([
+        {
+            'id': todo.id,
+            'title': todo.title,
+            'description': todo.description,
+            'is_complete': todo.is_complete
+        } for todo in todos
+    ])
+
+# @app.route('/todos', methods=['GET'])
+# def get_todos():
+#     user_sub = current_user()  # This is the unique identifier for the user.
+#     user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
+
+#     if not user:
+#         return jsonify({'message': 'User not found.'}), 404
+
+#     todos = ToDo.query.filter_by(user_id=user.uID).all()
+#     return jsonify([{'id': todo.id, 'title': todo.title, 'description': todo.description, 'is_complete': todo.is_complete} for todo in todos])
 
 
 @app.route('/todos', methods=['POST'])
@@ -249,19 +271,39 @@ def update_todo(todo_id):
     db.session.commit()
     return jsonify({'message': 'ToDo updated successfully.'})
 
+#NEW
 @app.route('/todos/togglecomplete/<int:todo_id>', methods=['PUT'])
+@cross_origin(origin='http://localhost:3000')  # Allow only your React app to access this route
 def toggle_complete(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
     todo.is_complete = not todo.is_complete
     db.session.commit()
     return jsonify({'message': 'ToDo complete toggle successfully.'})
 
+# @app.route('/todos/togglecomplete/<int:todo_id>', methods=['PUT'])
+# def toggle_complete(todo_id):
+#     todo = ToDo.query.get_or_404(todo_id)
+#     todo.is_complete = not todo.is_complete
+#     db.session.commit()
+#     return jsonify({'message': 'ToDo complete toggle successfully.'})
+
+
+#NEW
 @app.route('/todos/<int:todo_id>', methods=['DELETE'])
+@cross_origin()  # This enables CORS on this route for all domains. If you want to restrict it, specify the domain.
 def delete_todo(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
     db.session.delete(todo)
     db.session.commit()
     return jsonify({'message': 'ToDo deleted successfully.'})
+
+
+# @app.route('/todos/<int:todo_id>', methods=['DELETE'])
+# def delete_todo(todo_id):
+#     todo = ToDo.query.get_or_404(todo_id)
+#     db.session.delete(todo)
+#     db.session.commit()
+#     return jsonify({'message': 'ToDo deleted successfully.'})
 
 
 @app.route('/sessions/start', methods=['POST'])
