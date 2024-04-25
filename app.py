@@ -113,17 +113,18 @@ def is_token_blacklisted(token):
 blacklisted_tokens = set()
 
 # Models
+
 class User(db.Model):
     __tablename__ = 'user'
     uID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
     email = db.Column(db.String(254), unique=True, nullable=False)  # 254 character limit
-    password = db.Column(db.String(60), nullable=False)  # Bcrypt hashes are 60 chars
     updated_at = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.Integer, nullable=False)
     # Many-to-Many Relationship with StudyGroup
     study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
                                    back_populates='members')
+
 
 class ToDo(db.Model):
     __tablename__ = 'todo'
@@ -291,16 +292,18 @@ def session_history():
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
 
+"""
 @app.route('/users/register', methods=['POST'])
 def register_user():
     data = request.json
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(username=data['username'], email=data['email'], password=hashed_password, updated_at=datetime.now(), role=1)
+    new_user = User(username=data['username'], email=data['email'], updated_at=datetime.now(), role=1)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
+"""
 
 
+"""
 @app.route('/users/login', methods=['POST'])
 def login_user():
     token = get_token_auth_header()
@@ -309,8 +312,11 @@ def login_user():
         return jsonify({"success": True, "message": "User authenticated", "user": payload["sub"]}), 200
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 401
-    
+"""
 
+
+    
+"""
 @app.route('/users/logout', methods=['POST'])
 def logout_user():
     token = get_token_auth_header()
@@ -318,6 +324,8 @@ def logout_user():
     blacklisted_tokens.add(token)
 
     return jsonify({"success": True, "message": "User logged out successfully."}), 200
+"""
+
 
 
 @app.route('/users/profile', methods=['GET'])
