@@ -292,6 +292,7 @@ def session_history():
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
 
+"""
 @app.route('/users/register', methods=['POST'])
 def register_user():
     data = request.json
@@ -299,8 +300,10 @@ def register_user():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
+"""
 
 
+"""
 @app.route('/users/login', methods=['POST'])
 def login_user():
     token = get_token_auth_header()
@@ -309,8 +312,11 @@ def login_user():
         return jsonify({"success": True, "message": "User authenticated", "user": payload["sub"]}), 200
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 401
-    
+"""
 
+
+    
+"""
 @app.route('/users/logout', methods=['POST'])
 def logout_user():
     token = get_token_auth_header()
@@ -318,6 +324,8 @@ def logout_user():
     blacklisted_tokens.add(token)
 
     return jsonify({"success": True, "message": "User logged out successfully."}), 200
+"""
+
 
 
 @app.route('/users/profile', methods=['GET'])
