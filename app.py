@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
+from flask import g
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,7 +24,7 @@ import os
 
 # Initialize Flask App
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 
 # Configuration
@@ -89,28 +91,41 @@ def verify_decode_jwt(token):
             abort(401, description="Unable to parse authentication token.")
     abort(401, description="Unable to find appropriate key.")
 
-def current_user():
-    # Attempt to retrieve user ID from session first
-    user_id = session.get('user_id')
+# def current_user():
+#     # Attempt to retrieve user ID from session first
+#     user_id = session.get('user_id')
     
-    # If not found in session, decode the JWT token to get the user ID
-    if not user_id:
-        token = get_token_auth_header()
-        if not token:
-            abort(401, description="No authorization token found")
+#     # If not found in session, decode the JWT token to get the user ID
+#     if not user_id:
+#         token = get_token_auth_header()
+#         if not token:
+#             abort(401, description="No authorization token found")
+#         try:
+#             payload, _ = verify_decode_jwt(token)
+#             user_id = payload.get('sub')  # 'sub' is typically the user ID in JWT
+#         except Exception as e:
+#             print(str(e))  # For debugging purposes
+#             abort(401, description="Could not verify the user token")
+    
+#     return user_id
+
+# def is_token_blacklisted(token):
+#     return token in blacklisted_tokens
+#     # You would need to create a storage mechanism for the blacklisted tokens
+# blacklisted_tokens = set()
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
         try:
-            payload, _ = verify_decode_jwt(token)
-            user_id = payload.get('sub')  # 'sub' is typically the user ID in JWT
+            token = get_token_auth_header()
+            payload = verify_decode_jwt(token)
+            g.current_user = payload.get('sub')  # 'sub' is typically the user ID in JWT
         except Exception as e:
             print(str(e))  # For debugging purposes
-            abort(401, description="Could not verify the user token")
-    
-    return user_id
-
-def is_token_blacklisted(token):
-    return token in blacklisted_tokens
-    # You would need to create a storage mechanism for the blacklisted tokens
-blacklisted_tokens = set()
+            abort(401, description="Authentication failed: " + str(e))
+        return f(*args, **kwargs)
+    return decorated
 
 # Models
 
@@ -118,6 +133,7 @@ class User(db.Model):
     __tablename__ = 'user'
     uID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=True)
     email = db.Column(db.String(254), unique=True, nullable=False)  # 254 character limit
     updated_at = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.Integer, nullable=False)
@@ -216,32 +232,44 @@ ChannelMessage = db.Table('ChannelMessage',
 
 @app.route('/')
 def index():
-    return "Welcome to the Pomodoro API!"
+    """Endpoint for home - returns a welcome message."""
+    return jsonify({'message': "Welcome to the Pomodoro API!"}), 200
 
+# Protected todos get route
 @app.route('/todos', methods=['GET'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def get_todos():
-    user_sub = current_user()  # This is the unique identifier for the user.
-    user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
+    user_sub = g.current_user
+    user = User.query.filter_by(sub=user_sub).first()
 
     if not user:
         return jsonify({'message': 'User not found.'}), 404
 
     todos = ToDo.query.filter_by(user_id=user.uID).all()
-    return jsonify([{'id': todo.id, 'title': todo.title, 'description': todo.description, 'is_complete': todo.is_complete} for todo in todos])
+    return jsonify([
+        {
+            'id': todo.id,
+            'title': todo.title,
+            'description': todo.description,
+            'is_complete': todo.is_complete
+        } for todo in todos
+    ]), 200
 
-
-@app.route('/todos', methods=['POST'])
-@cross_origin()
+# Protected add todo post route
+@app.route('/add-todo', methods=['POST'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def add_todo():
-    user_id = current_user()
     data = request.json
-    new_todo = ToDo(title=data['title'], description=data['description'], user_id=user_id)
+    new_todo = ToDo(title=data['title'], description=data['description'], user_id=g.current_user)
     db.session.add(new_todo)
     db.session.commit()
-    print("hello world"),
     return jsonify({'message': 'ToDo created successfully.'}), 201
 
+# Protected update todo put route
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
+@requires_auth
 def update_todo(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
     data = request.json
@@ -249,99 +277,100 @@ def update_todo(todo_id):
     todo.description = data.get('description', todo.description)
     todo.is_complete = data.get('is_complete', todo.is_complete)
     db.session.commit()
-    return jsonify({'message': 'ToDo updated successfully.'})
+    return jsonify({'message': 'ToDo updated successfully.'}), 200
 
-@app.route('/todos/togglecomplete/<int:todo_id>', methods=['PUT'])
+# Protected toggle todo put route
+@app.route('/todos/<int:todo_id>/toggle-complete', methods=['PUT'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def toggle_complete(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
     todo.is_complete = not todo.is_complete
     db.session.commit()
-    return jsonify({'message': 'ToDo complete toggle successfully.'})
+    return jsonify({'message': 'ToDo completion status toggled.'}), 200
 
+# Protected delete todo delete route
 @app.route('/todos/<int:todo_id>', methods=['DELETE'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def delete_todo(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
     db.session.delete(todo)
     db.session.commit()
-    return jsonify({'message': 'ToDo deleted successfully.'})
+    return jsonify({'message': 'ToDo deleted successfully.'}), 200
 
-
+# Protected get sessions route
 @app.route('/sessions/start', methods=['POST'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def start_session():
     data = request.json
-    new_session = Session(uID=data['uID'], start_time=datetime.utcnow(), duration=data['duration'], status=1)
+    new_session = Session(uID=g.current_user, start_time=datetime.utcnow(), duration=data['duration'], status=1)
     db.session.add(new_session)
     db.session.commit()
     return jsonify({'message': 'Session started successfully.', 'session_id': new_session.sID}), 201
 
+# Protected stop sessions routes
 @app.route('/sessions/stop', methods=['POST'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def stop_session():
-    session_id = request.json.get('session_id')
-    session = Session.query.filter_by(sID=session_id).first()
+    data = request.json
+    session_id = data.get('session_id')
+    session = Session.query.filter_by(sID=session_id, uID=g.current_user).first() # Verify user owns the session
     if session:
         session.end_time = datetime.utcnow()
         session.status = 0  # Assuming 0 means stopped
         db.session.commit()
         return jsonify({'message': 'Session stopped successfully.'}), 200
     else:
-        return jsonify({'message': 'Session not found.'}), 404
+        return jsonify({'message': 'Session not found or you do not have permission.'}), 404
 
+# Protected get sessions route
 @app.route('/sessions/history', methods=['GET'])
+@cross_origin(origin='http://localhost:3000')
+@requires_auth
 def session_history():
-    sessions = Session.query.all()
-    sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
+    sessions = Session.query.filter_by(uID=g.current_user).all() # Fetch sessions for current user
+    sessions_data = [
+        {
+            'session_id': session.sID,
+            'start_time': session.start_time.isoformat(),
+            'end_time': session.end_time.isoformat() if session.end_time else None,
+            'duration': session.duration,
+            'status': session.status
+        }
+        for session in sessions
+    ]
     return jsonify(sessions_data), 200
 
-"""
+# register user
 @app.route('/users/register', methods=['POST'])
 def register_user():
     data = request.json
-    new_user = User(username=data['username'], email=data['email'], updated_at=datetime.now(), role=1)
+    new_user = User(username=data['username'], email=data['email'], password=bcrypt.generate_password_hash(data['password']).decode('utf-8'), updated_at=datetime.now(), role=1)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created successfully.', 'uID': new_user.uID}), 201
-"""
 
-
-"""
+# login user
 @app.route('/users/login', methods=['POST'])
 def login_user():
-    token = get_token_auth_header()
-    try:
-        payload = verify_decode_jwt(token)
-        return jsonify({"success": True, "message": "User authenticated", "user": payload["sub"]}), 200
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 401
-"""
+    # This endpoint would typically return a token after verifying user credentials.
+    return jsonify({"message": "This route should verify user credentials and return a token."}), 200
 
 
-    
-"""
 @app.route('/users/logout', methods=['POST'])
+@requires_auth
 def logout_user():
-    token = get_token_auth_header()
-    # Add the token to the blacklist
-    blacklisted_tokens.add(token)
+    # This would typically instruct the client to delete the stored token.
+    return jsonify({"message": "This route should instruct the client to delete the token."}), 200
 
-    return jsonify({"success": True, "message": "User logged out successfully."}), 200
-"""
-
-
-
+# Protected get users route
 @app.route('/users/profile', methods=['GET'])
+@requires_auth
 def user_profile():
-    # Authenticate with token
-    token = get_token_auth_header()
-    if not token:
-        return jsonify({"error": "Authorization token is missing"}), 401
-
-    payload = verify_decode_jwt(token)
-    if not payload:
-        return jsonify({"error": "Invalid token"}), 401
-
-    # Search for profile using info in the token
-    user_id = payload.get("sub")  # Assuming the user's unique identifier is in the 'sub' claim
-    user = User.query.filter_by(uID=user_id).first()  # Query the User table for the user ID
+    user = User.query.filter_by(uID=g.current_user).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -350,57 +379,40 @@ def user_profile():
         "email": user.email,
         "role": user.role
     }
+    return jsonify(user_profile), 200
 
-    # return username, email, and role
-    return jsonify({
-        "username": user_profile["username"],
-        "email": user_profile["email"],
-        "role": user_profile["role"]
-    }), 200
-
+# Protected get users route
 @app.route('/users/profile/update', methods=['PATCH'])
+@requires_auth
 def update_profile():
-    # Authenticate with token
-    token = get_token_auth_header()
-    if not token:
-        return jsonify({"error": "Authorization token is missing"}), 401
-
-    payload = verify_decode_jwt(token)
-    if not payload:
-        return jsonify({"error": "Invalid token"}), 401
-    
-    user_id = payload.get("sub")
-    user = User.query.filter_by(uID=user_id).first()  # Query the User table for the user ID
+    user = User.query.filter_by(uID=g.current_user).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
     
     data = request.json
-    if not data:
-        return jsonify({"error": "Request body is missing or not JSON"}), 400, 400
-
     if 'username' in data:
         user.username = data['username']
     if 'email' in data:
         user.email = data['email']
     if 'role' in data:
         user.role = data['role']
-    # password too?
+    if 'password' in data:
+        user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
     db.session.commit()
-    
-    updated_profile = {
-        "username": user.username,
-        "email": user.email,
-        "role": user.role
-    }
-
-    # Return success response
     return jsonify({"message": "User profile updated successfully"}), 200
 
+# Protected delete user route
 @app.route('/users/delete', methods=['DELETE'])
+@requires_auth
 def delete_user():
+    user = User.query.filter_by(uID=g.current_user).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-    return
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": "User account deleted successfully."}), 200
 
 
 if __name__ == '__main__':
