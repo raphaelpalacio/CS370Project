@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { TypingAnimation } from "./TypingAnimation";
 
 export default function HomePage() {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const phrases = ["Ditch the Guilt", "Not the Group Chat"];
 
   const handleButtonClick = () => {
     if (!isAuthenticated) {
@@ -23,9 +25,10 @@ export default function HomePage() {
           <div className="flex flex-col justify-center space-y-4 px-8 md:px-12">
             <div className="space-y-2 text-black">
               {" "}
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                Ditch the Guilt, Not the Group Chat
-              </h1>
+              <TypingAnimation
+                phrases={phrases}
+                className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
+              />
               <p className="max-w-[600px] text-gray-500 md:text-xl">
                 A study and work application that supports all of your Pomodoro
                 needs. Get work done in focused bursts and reward yourself with
