@@ -1,66 +1,73 @@
-import React, { useState } from 'react';
-import './AboutPage.css'
+import React, { useState } from "react";
+import "./AboutPage.css";
 
 const AboutPage = () => {
   // The initial profiles array with default information or empty strings
   const [profiles] = useState([
-    { id: 1, 
-     name: 'Alejandro Pacheco',
-     hometown: 'Miami, FL', 
-     major: 'Computer Science B.A. // Business Minor', 
-     graduatingClass: 'Class of 2025',
-     image: '/alejandro.jpg',
-     linkedin: 'https://www.linkedin.com/in/alejandro-pacheco03/'
+    {
+      id: 1,
+      name: "Alejandro Pacheco",
+      hometown: "Miami, FL",
+      major: "Computer Science B.A. // Business Minor",
+      graduatingClass: "Class of 2025",
+      image: "/alejandro.jpg",
+      linkedin: "https://www.linkedin.com/in/alejandro-pacheco03/",
     },
 
-    { id: 2, 
-    name: 'Andrew Chang', 
-    hometown: 'San Diego, CA',  
-    major: 'Computer Science B.S.',
-    graduatingClass: 'Class of 2026', 
-    image: '/andrew.jpg',
-    linkedin: 'https://www.linkedin.com/in/andrewchangsd'
+    {
+      id: 2,
+      name: "Andrew Chang",
+      hometown: "San Diego, CA",
+      major: "Computer Science B.S.",
+      graduatingClass: "Class of 2026",
+      image: "/andrew.jpg",
+      linkedin: "https://www.linkedin.com/in/andrewchangsd",
     },
 
-    { id: 3, 
-      name: 'Raphael Palacio',
-       hometown: 'Corning, NY',  
-       major: 'Computer Science B.S.',
-       graduatingClass: 'Class of 2025', 
-       image: '/raphael.JPG',
-       linkedin: 'https://www.linkedin.com/in/raphael-palacio-36a1801ab/'
+    {
+      id: 3,
+      name: "Raphael Palacio",
+      hometown: "Corning, NY",
+      major: "Computer Science B.S.",
+      graduatingClass: "Class of 2025",
+      image: "/raphael.JPG",
+      linkedin: "https://www.linkedin.com/in/raphael-palacio-36a1801ab/",
     },
-    { id: 4, 
-      name: 'Jooha ',
-       hometown: 'Madison, WI', 
-       major: 'Quantitative Sience', 
-       graduatingClass: 'Class of 2025', 
-       image: '/jooha.jpg',
-       linkedin: 'https://www.linkedin.com/in/jooha-lee-a51b30242/'
+    {
+      id: 4,
+      name: "Jooha ",
+      hometown: "Madison, WI",
+      major: "Quantitative Sience",
+      graduatingClass: "Class of 2025",
+      image: "/jooha.jpg",
+      linkedin: "https://www.linkedin.com/in/jooha-lee-a51b30242/",
     },
-    { id: 5, 
-      name: 'Hamza',
-       hometown: '', 
-       major: 'Computer Science B.S.', 
-       graduatingClass: 'Class of 2025', 
-       image: '',
-       linkedin: ''
+    {
+      id: 5,
+      name: "Hamza",
+      hometown: "",
+      major: "Computer Science B.S.",
+      graduatingClass: "Class of 2025",
+      image: "",
+      linkedin: "",
     },
-    { id: 6, 
-      name: 'Shiv',
-       hometown: 'West Windsor, NJ', 
-       major: 'Computer Science B.S.', 
-       graduatingClass: 'Class of 2025', 
-       image: '/shiv.png',
-       linkedin: 'https://www.linkedin.com/in/shivdesai02/'
+    {
+      id: 6,
+      name: "Shiv",
+      hometown: "West Windsor, NJ",
+      major: "Computer Science B.S.",
+      graduatingClass: "Class of 2025",
+      image: "/shiv.png",
+      linkedin: "https://www.linkedin.com/in/shivdesai02/",
     },
-    { id: 7, 
-      name: 'Riyaa',
-       hometown: 'Computer Science B.S. and Business (Finance)', 
-       major: ' ', 
-       graduatingClass: 'Class of 2026', 
-       image: '',
-       linkedin: ''
+    {
+      id: 7,
+      name: "Riyaa",
+      hometown: "Computer Science B.S. and Business (Finance)",
+      major: " ",
+      graduatingClass: "Class of 2026",
+      image: "",
+      linkedin: "",
     },
   ]);
   return (
