@@ -9,8 +9,8 @@ function Settings() {
   const { workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes, setShowSettings } = useContext(SettingsContext);
 
   const settingsInfo = useContext(SettingsContext);
-  return (
-    <div style={{ textAlign: 'left', marginTop: '140px' }}>
+  return(
+    <div style={{textAlign:'left'}}>
       <label>work: {settingsInfo.workMinutes}:00</label>
       <ReactSlider
         className={'slider'}

@@ -11,6 +11,7 @@ div.App {
   width: 500px;
   border-radius: 1em;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.205);
+  margin-left: 550px;
 }
 
 div.group {
@@ -37,12 +38,17 @@ label {
   margin: 0px;
 }
 
+h1 {
+  font-size: large;
+  margin: 0em 0.8em;
+}
 
 h2 {
   display: inline;
   font-weight: bold;
   font-size: medium;
   margin: inherit;
+  color:black;
 }
 
 input[type="color"] {

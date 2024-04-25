@@ -114,7 +114,7 @@ export const TodoWrapper = () => {
             toggleComplete={toggleComplete}
           />
         )
-      ))}
+      )}
     </div>
   );
 };

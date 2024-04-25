@@ -14,10 +14,10 @@ export const TodoForm = ({addTodo}) => {
           setValue('');
         }
       };
-      return (
-        <form onSubmit={handleSubmit} className="TodoForm">
-          <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="todo-input" placeholder='task' />
-          <button type="submit" className='todo-btn' style={{ marginBottom: '-10px' }}>Add</button>
-        </form>
-      );
+  return (
+    <form onSubmit={handleSubmit} className="TodoForm">
+    <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="todo-input" placeholder='task' />
+    <button type="submit" className='todo-btn'>Add Task</button>
+  </form>
+  )
 }

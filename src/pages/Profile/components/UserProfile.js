@@ -20,21 +20,23 @@ export default function EditableUserProfile({
     };
     const { sessionCount } = useContext(SettingsContext); // Get session count from context
 
-
+    const h2Style = {
+        color: 'black', // Change color to your desired color
+    };
     return <div>
         <Group>
-            <h2>Name:</h2> {stored.name}
+            <h2 style={h2Style}>Name:</h2> {stored.name}
         </Group>
         <Group>
-            <h2>Birthday:</h2> {months.getShortName(stored.month)} {stored.day}
-        </Group>
-
-        <Group>
-            <h2>Total sessions:</h2> {sessionCount}
+            <h2 style={h2Style}>Birthday:</h2> {months.getShortName(stored.month)} {stored.day}
         </Group>
 
         <Group>
-            <h2>Total hours:</h2> {sessionCount}
+            <h2 style={h2Style}>Total sessions:</h2> {sessionCount}
+        </Group>
+
+        <Group>
+            <h2 style={h2Style}>Total hours:</h2> {sessionCount}
         </Group>
 
         <Group>

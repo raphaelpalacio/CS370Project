@@ -152,7 +152,6 @@ h1 {
   border: none;
   padding: 0.55rem;
   cursor: pointer;
-  height: 42px;
   /* No width specified here, it will take the space needed for its content */
 }
 
