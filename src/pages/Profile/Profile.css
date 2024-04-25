@@ -12,6 +12,7 @@ div.App {
   width: 400px;
   border-radius: 1em;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.205);
+  margin-left: 550px;
 }
 
 div.group {
