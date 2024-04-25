@@ -396,10 +396,11 @@ def delete_user():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        migrate = Migrate(app, db)
+    # with app.app_context():
+    #     db.create_all()
+    #     migrate = Migrate(app, db)
     #Base.metadata.create_all(bind=db.engine)  # Ensures tables are created before the first request if they don't exist
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run()
 
 

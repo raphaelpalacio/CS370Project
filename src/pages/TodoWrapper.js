@@ -32,7 +32,6 @@ export const TodoWrapper = () => {
         console.log(data);
       })
     );
-    
   };
 
   const deleteTodo = (id) => {
