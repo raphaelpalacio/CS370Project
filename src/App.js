@@ -22,6 +22,8 @@ function App() {
     return <p>Authentication Error: {error.message}</p>;
   }
 
+  
+
   if (isLoading) {
     return (
       <div
