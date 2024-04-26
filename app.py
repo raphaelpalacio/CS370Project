@@ -236,6 +236,13 @@ def add_todo():
     db.session.commit()
     return jsonify({'message': 'ToDo created successfully.'}), 201
 
+@app.route('/todosTest', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def todo_test():
+    data = request.json
+    print(data)
+    return jsonify(data)
+
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
 def update_todo(todo_id):
     todo = ToDo.query.get_or_404(todo_id)
@@ -246,12 +253,12 @@ def update_todo(todo_id):
     db.session.commit()
     return jsonify({'message': 'ToDo updated successfully.'})
 
-@app.route('/todos/<int:todo_id>', methods=['DELETE'])
-def delete_todo(todo_id):
-    todo = ToDo.query.get_or_404(todo_id)
-    db.session.delete(todo)
-    db.session.commit()
-    return jsonify({'message': 'ToDo deleted successfully.'})
+@app.route('/todosDelete', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def delete_todo():
+    data = request.json
+    print(data)
+    return jsonify('todo deleted')
 
 
 @app.route('/sessions/start', methods=['POST'])

@@ -3,6 +3,7 @@ import "./Todo.css";
 
 export const TodoForm = ({addTodo}) => {
     const [value, setValue] = useState('');
+  
 
     const handleSubmit = (e) => {
       // prevent default action

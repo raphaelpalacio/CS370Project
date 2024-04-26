@@ -5,49 +5,79 @@ import { v4 as uuidv4 } from "uuid";
 import { EditTodoForm } from "./EditTodoForm";
 import "./Todo.css";
 import axios from "axios";
+import { User, useAuth0 } from "@auth0/auth0-react";
 
 export const TodoWrapper = () => {
+  const { user, isAuthenticated } = useAuth0();
+
+  if (isAuthenticated) {
+   
+  }
+
   const [todos, setTodos] = useState([]);
 
+  // similar logic to this: user_id = session.get('user_id')
+  // how to check session in inspector
   const addTodo = (todo) => {
-    setTodos([
-      ...todos,
-      { id: uuidv4(), task: todo, completed: false, isEditing: false },
-    ]);
-    const todoData = {
-      title: todo,
-      description: "",
+    console.log('test')
+    // Optimistically add the todo to the UI
+    const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false };
+    
+    setTodos([...todos, newTodo]);
+    console.log('User ID:', user.sub); 
+    console.log(user)
+   
+
+    const titleTest = {
+      user:user
     };
-    fetch("http://localhost:5000/todos", {
-      method: "POST",
+
+    axios.post("http://localhost:5000/todosTest", titleTest, {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(todoData),
-    }).then((res) =>
-      res.json().then((data) => {
-        console.log(data);
-      })
-    );
+        // Remove the Access-Control-Allow-Origin header, it's a response header set by the server
+        // Add Authorization header with your actual JWT token
+        // "Authorization": "Bearer your_actual_token_here",
+
+        // comment out the JTW function 
+      }
+    })
+    .then((response) => {
+      console.log('Todo added:', response.data);
+      // You might want to update your state here if needed
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your post operation:', error);
+      // Handle any errors here
+      // Optionally, remove the optimistically added todo if the POST fails
+    });
   };
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
+    console.log('User ID:', user.sub); 
+    console.log(user)
 
-    const todoData = {};
-    fetch("http://localhost:5000/todos/" + id.toString(), {
-      method: "DELETE",
+    const todoData = {user: user};
+    axios.post("http://localhost:5000/todosDelete", todoData, {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(todoData),
-    }).then((res) =>
-      res.json().then((data) => {
-        console.log(data);
-      })
-    );
+        // Remove the Access-Control-Allow-Origin header, it's a response header set by the server
+        // Add Authorization header with your actual JWT token
+        // "Authorization": "Bearer your_actual_token_here",
+
+        // comment out the JTW function 
+      }
+    })
+    .then((response) => {
+      console.log('Todo deleted:', response.data);
+      // You might want to update your state here if needed
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your post operation:', error);
+      // Handle any errors here
+      // Optionally, remove the optimistically added todo if the POST fails
+    });
   };
 
   const toggleComplete = async (id) => {
