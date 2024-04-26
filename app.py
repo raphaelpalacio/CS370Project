@@ -8,7 +8,7 @@ from sqlalchemy.orm import declarative_base
 
 from datetime import datetime
 
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from datetime import datetime
@@ -22,7 +22,7 @@ import os
 
 # Initialize Flask App
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 
 # Configuration
@@ -215,6 +215,7 @@ def index():
     return "Welcome to the Pomodoro API!"
 
 @app.route('/todos', methods=['GET'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type', 'Authorization'])
 def get_todos():
     user_sub = current_user()  # This is the unique identifier for the user.
     user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
