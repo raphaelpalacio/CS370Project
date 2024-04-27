@@ -93,6 +93,7 @@ class Session(Base):
     __tablename__ = 'session'
     sID = Column(Integer, primary_key=True)
     uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    scID = Column(Integer, ForeignKey('sessionCounter.scID'), nullable=True)
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime, nullable=True)
     duration = Column(Integer, nullable=True)
@@ -236,12 +237,13 @@ def add_todo():
     db.session.commit()
     return jsonify({'message': 'ToDo created successfully.'}), 201
 
-@app.route('/todosTest', methods=['POST'])
+@app.route('/addTodo', methods=['POST'])
 @cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
-def todo_test():
+def add_todos():
     data = request.json
     print(data)
-    return jsonify(data)
+    return jsonify('todo added')
+    
 
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
 def update_todo(todo_id):
@@ -286,6 +288,21 @@ def session_history():
     sessions = Session.query.all()
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
+
+# @app.route('/session/counter', methods=['POST'])
+# def create_session_counter():
+#     data = request.json
+#     new_counter = session_count(uID=data['uID'], session_count=data['session_count'])
+#     db.session.add(new_counter)
+#     db.session.commit()
+#     return jsonify({'message': 'Session counter created successfully.', 'counter_id': new_counter.scID}), 201
+
+
+# @app.route('/session/count', methods=['GET'])
+# def session_count():
+#     session_count = session_count.query.all()
+#     session_count_data = [{'counter_id': counter.scID, 'session_count': counter.session_count} for counter in session_count]
+#     return jsonify(session_count_data), 200
 
 @app.route('/users/register', methods=['POST'])
 def register_user():

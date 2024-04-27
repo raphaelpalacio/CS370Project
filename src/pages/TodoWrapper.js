@@ -32,7 +32,7 @@ export const TodoWrapper = () => {
       user:user
     };
 
-    axios.post("http://localhost:5000/todosTest", titleTest, {
+    axios.post("http://localhost:5000/addTodo", titleTest, {
       headers: {
         "Content-Type": "application/json",
         // Remove the Access-Control-Allow-Origin header, it's a response header set by the server
