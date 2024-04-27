@@ -27,6 +27,33 @@ export const TodoWrapper = () => {
   const addTodo = (todo) => {
     const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false }; // Added isEditing
     setTodos([...todos, newTodo]);
+    console.log('User ID:', user.sub); 
+    console.log(user)
+   
+
+    const titleTest = {
+      user:user
+    };
+
+    axios.post("http://localhost:5000/todosTest", titleTest, {
+      headers: {
+        "Content-Type": "application/json",
+        // Remove the Access-Control-Allow-Origin header, it's a response header set by the server
+        // Add Authorization header with your actual JWT token
+        // "Authorization": "Bearer your_actual_token_here",
+
+        // comment out the JTW function 
+      }
+    })
+    .then((response) => {
+      console.log('Todo added:', response.data);
+      // You might want to update your state here if needed
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your post operation:', error);
+      // Handle any errors here
+      // Optionally, remove the optimistically added todo if the POST fails
+    });
   };
 
   const deleteTodo = (id) => {
