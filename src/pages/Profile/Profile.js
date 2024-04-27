@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import EditableUserProfile from './components/EditableUserProfile';
 import UserProfile from './components/UserProfile';
 
 function randomColor() {
-    return "#" + Math.floor(Math.random()*16777215).toString(16);
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 function randomName() {
     return "Set Your Name";
 }
 
-function App() {
+function Profile() {
     const now = new Date(Date.now());
     const defaultBirthday = new Date(now.getTime() + 86400000);
 
@@ -32,6 +32,10 @@ function App() {
     });
 
     const [color, setColor] = useState(randomColor());
+    const [sessionCount, setSessionCount] = useState(() => {
+        const storedSessionCount = localStorage.getItem("sessionCount");
+        return storedSessionCount ? parseInt(storedSessionCount) : 0;
+    });
 
     const stored = { name, month, day, color };
     const isBirthdayToday = now.getMonth() === month && now.getDate() === day;
@@ -48,27 +52,31 @@ function App() {
         localStorage.setItem('day', day);
     }, [day]);
 
+    useEffect(() => {
+        // Update session count when it changes
+        localStorage.setItem("sessionCount", sessionCount.toString());
+    }, [sessionCount]);
+
     function handleEditComplete(result) {
-        console.log("handleEditComplete", result);
         if (result != null) {
             setName(result.name);
             setMonth(result.month);
             setDay(result.day);
             setColor(result.color);
-        }        
+        }
         setEditMode(false);
     }
 
     return (
         <div className="container">
-            <div className="App">                 
+            <div className="App">
                 {
                     editMode
                         ? <>
                             <h1>My Profile</h1>
                             <EditableUserProfile
-                                    stored={stored}
-                                    editCompleteCallback={handleEditComplete}                            
+                                stored={stored}
+                                editCompleteCallback={handleEditComplete}
                             />
                         </>
                         : <>
@@ -77,15 +85,18 @@ function App() {
                                     ? <div className="birthday">Happy Birthday!</div>
                                     : <h1>My Profile</h1>
                             }
+                                          <div>Total Sessions: {sessionCount}</div>
                             <UserProfile
-                                    stored={stored}
-                                    startEditCallback={() => setEditMode(true)}
+                                stored={stored}
+                                startEditCallback={() => setEditMode(true)}
                             />
                         </>
-                }            
+                }
+                
+
             </div>
         </div>
     );
 }
 
-export default App;
+export default Profile;

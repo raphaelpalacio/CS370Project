@@ -25,7 +25,7 @@ export const TodoWrapper = () => {
   }, [todos]);
 
   const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, completed: false };
+    const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false }; // Added isEditing
     setTodos([...todos, newTodo]);
   };
 

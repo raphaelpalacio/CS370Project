@@ -1,13 +1,21 @@
-import react from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
-const SettingsContext = react.createContext({
-  workMinutes: 1,
-  breakMinutes: 5,
-  setShowSettings: () => {}, // Placeholder function
-  setWorkMinutes: () => {}, // Placeholder function
-  setBreakMinutes: () => {}, // Placeholder function
-  sessionCount: 0,
-  setSessionCount: () => {}, // Add this line
-});
+const SettingsContext = createContext();
+
+export const SettingsProvider = ({ children }) => {
+  const [sessionCount, setSessionCount] = useState(
+    localStorage.getItem('sessionCount') || 0
+  );
+
+  useEffect(() => {
+    localStorage.setItem('sessionCount', sessionCount);
+  }, [sessionCount]);
+
+  return (
+    <SettingsContext.Provider value={{ sessionCount, setSessionCount }}>
+      {children}
+    </SettingsContext.Provider>
+  );
+};
 
 export default SettingsContext;

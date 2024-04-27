@@ -8,7 +8,7 @@ import SettingsContext from "./SettingsContext";
 import './Timer.css';
 
 // Constants
-const red = '#f54e4e';
+const purple = '#800080';
 const green = '#4aec8c';
 
 function Timer() {
@@ -21,10 +21,30 @@ function Timer() {
   const stopRef = useRef(stop);
   const modeRef = useRef(mode);
 
+  useEffect(() => {
+    // Load timer state from localStorage if available
+    const timerState = JSON.parse(localStorage.getItem('timerState'));
+    if (timerState) {
+      setStop(timerState.stop);
+      setMode(timerState.mode);
+      setSecondsLeft(timerState.secondsLeft);
+      stopRef.current = timerState.stop;
+      modeRef.current = timerState.mode;
+      secondsLeftRef.current = timerState.secondsLeft;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save timer state to localStorage
+    localStorage.setItem('timerState', JSON.stringify({ stop, mode, secondsLeft }));
+  }, [stop, mode, secondsLeft]);
+
   // Effects
   useEffect(() => {
     const calculateNextMode = () => {
-      if (modeRef.current === 'work') settingsInfo.setSessionCount(prevCount => prevCount + 1);
+      if (modeRef.current === 'work') {
+        settingsInfo.setSessionCount(prevCount => prevCount + 1);
+      }
 
       const nextMode = modeRef.current === 'work' ? 'break' : 'work';
       const nextSeconds = (nextMode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60;
@@ -51,7 +71,7 @@ function Timer() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [settingsInfo]);
+  }, [settingsInfo, stopRef, modeRef, secondsLeftRef]);
 
   // Calculations
   const totalSeconds = mode === 'work'
@@ -64,7 +84,7 @@ function Timer() {
 
   // Render
   return (
-    <div className="timer-container" style={{ marginTop: '70px' }}> {/* Adjust marginTop as needed */}
+    <div className="timer-container" style={{ marginTop: '70px' }}>
       <div className="progressbar-container">
         <div className="progressbar-content">
           <CircularProgressbar
@@ -72,7 +92,7 @@ function Timer() {
             text={`${minutes}:${seconds}`}
             styles={buildStyles({
               textColor: '#fff',
-              pathColor: mode === 'work' ? red : green,
+              pathColor: mode === 'work' ? purple : green,
               tailColor: 'rgba(255,255,255,.2)',
             })}
           />

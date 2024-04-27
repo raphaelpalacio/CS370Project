@@ -1,22 +1,22 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import Profile from "./pages/Profile/Profile"
+import Profile from "./pages/Profile/Profile";
 import PomodoroPage from "./pages/PomodoroPage";
-
-//import ProfilePage from "./pages/Profile/container/ProfilePage";
-//import ProfilePage from './pages/ProfilePage';
 import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
-  const { isLoading, error, isAuthenticated } = useAuth0();
+  const { isLoading, error } = useAuth0();
+  const [sessionCount, setSessionCount] = useState(() => {
+    const storedSessionCount = localStorage.getItem("sessionCount");
+    return storedSessionCount ? parseInt(storedSessionCount) : 0;
+  });
+
+  const incrementSessionCount = () => {
+    setSessionCount((prevSessionCount) => prevSessionCount + 1);
+  };
 
   if (error) {
     return <p>Authentication Error: {error.message}</p>;
@@ -26,19 +26,18 @@ function App() {
     return (
       <div
         style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: 'white',
-          fontSize: '2em', // Adjust the font size as needed
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          color: "navy",
+          fontSize: "2em", // Adjust the font size as needed
         }}
       >
         Loading...
       </div>
     );
   }
-  
 
   return (
     <Router>
@@ -52,11 +51,11 @@ function App() {
             </div>
           }
         />
-         <Route
+        <Route
           path="/profilepage"
           element={
             <div className="pt-20">
-              <Profile />
+              <Profile sessionCount={sessionCount} />
             </div>
           }
         />
@@ -70,14 +69,8 @@ function App() {
         />
         <Route
           path="/pomodoro"
-          element={
-            <div >
-              <PomodoroPage />
-            </div>
-          }
-          //element={isAuthenticated ? <PomodoroPage /> : <Navigate to="/" />}
+          element={<PomodoroPage sessionCount={sessionCount} incrementSessionCount={incrementSessionCount} />}
         />
-        
       </Routes>
     </Router>
   );
