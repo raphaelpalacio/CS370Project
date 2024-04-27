@@ -2,13 +2,17 @@ div.container {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh; /* Optionally, you can set a specific height */
+  background-color: grey;
+  width: 100vw;
+
 }
 
 div.App {
-  background-color: white;
+  background-color: grey;
   padding: 2em 1em;
   margin: auto;
-  width: 500px;
+  width: 400px;
   border-radius: 1em;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.205);
   margin-left: 550px;
@@ -31,7 +35,7 @@ div.color-box {
   display: inline-block;
   width: 50px;
   height: 20px;
-  border: 1px solid darkgray;
+  border: 1px solid black;
 }
 
 label {
@@ -41,6 +45,7 @@ label {
 h1 {
   font-size: large;
   margin: 0em 0.8em;
+  color:black;
 }
 
 h2 {
@@ -63,7 +68,6 @@ button {
   height: 30px;
   padding: 0px 1.25em;
   margin: 1em 0.5em;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.205);
 }
 
 button:hover {

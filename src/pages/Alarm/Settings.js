@@ -1,7 +1,7 @@
 import ReactSlider from 'react-slider';
 import './slider.css'
 import SettingsContext from "./SettingsContext";
-import { useContext } from "react";
+import {useContext} from "react";
 import BackButton from "./BackButton";
 
 
@@ -10,7 +10,7 @@ function Settings() {
 
   const settingsInfo = useContext(SettingsContext);
   return(
-    <div style={{textAlign:'left'}}>
+    <div style={{textAlign:'left', paddingTop: '130px'}}>
       <label>work: {settingsInfo.workMinutes}:00</label>
       <ReactSlider
         className={'slider'}
@@ -21,9 +21,7 @@ function Settings() {
         min={1}
         max={120}
       />
-      <div style={{ marginBottom:'10px' }}> {/* Adjusted margin bottom */}
-        <label style={{ marginBottom:'10px'}}>break: {settingsInfo.breakMinutes}:00</label>
-      </div>
+      <label>break: {settingsInfo.breakMinutes}:00</label>
       <ReactSlider
         className={'slider green'}
         thumbClassName={'thumb'}
@@ -33,7 +31,7 @@ function Settings() {
         min={1}
         max={120}
       />
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div style={{textAlign:'center', marginTop:'20px'}}>
         <BackButton onClick={() => setShowSettings(false)} />
       </div>
 

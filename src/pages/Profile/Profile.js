@@ -3,6 +3,9 @@ import './Profile.css';
 import EditableUserProfile from './components/EditableUserProfile';
 import UserProfile from './components/UserProfile';
 
+
+
+
 function randomColor() {
     return "#" + Math.floor(Math.random()*16777215).toString(16);
 }
@@ -10,6 +13,7 @@ function randomColor() {
 function randomName() {
     return "Set You Name " 
 }
+
 
 function App() {
     const now = new Date(Date.now());
@@ -37,8 +41,8 @@ function App() {
     }
 
     return (
-        <div className="container" style={{ backgroundColor: 'navy', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
-            <div className="App" style={{ marginRight: '26%'}}>                 
+        <div className="container">
+            <div className="App">                 
                 {
                     editMode
                         ? <>
