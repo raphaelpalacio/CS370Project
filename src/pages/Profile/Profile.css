@@ -3,13 +3,13 @@ div.container {
   justify-content: center;
   align-items: center;
   height: 100vh; /* Optionally, you can set a specific height */
-  background-color: grey;
+  background-color: white;
   width: 100vw;
 
 }
 
 div.App {
-  background-color: grey;
+  background-color: rgb(87, 76, 120);
   padding: 2em 1em;
   margin: auto;
   width: 400px;

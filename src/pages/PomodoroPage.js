@@ -4,6 +4,8 @@ import ChatComponent from "./ChatComponent"; // Import the ChatComponent
 import Function from "./Alarm/TimerFunction";
 import SettingsContext from "./Alarm/SettingsContext";
 
+
+
 const PomodoroPage = () => {
 
   const [completedPomodoros, setCompletedPomodoros] = useState(0); // State for completedPomodoros

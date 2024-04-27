@@ -1,33 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Profile.css';
 import EditableUserProfile from './components/EditableUserProfile';
 import UserProfile from './components/UserProfile';
-
-
-
 
 function randomColor() {
     return "#" + Math.floor(Math.random()*16777215).toString(16);
 }
 
 function randomName() {
-    return "Set You Name " 
+    return "Set Your Name";
 }
-
 
 function App() {
     const now = new Date(Date.now());
     const defaultBirthday = new Date(now.getTime() + 86400000);
 
     const [editMode, setEditMode] = useState(false);
+    const [name, setName] = useState(() => {
+        const storedName = localStorage.getItem('name');
+        return storedName ? storedName : randomName();
+    });
 
-    const [name, setName] = useState(randomName());
-    const [month, setMonth] = useState(defaultBirthday.getMonth());
-    const [day, setDay] = useState(defaultBirthday.getDate());
+    const [month, setMonth] = useState(() => {
+        const storedMonth = parseInt(localStorage.getItem('month'));
+        return !isNaN(storedMonth) ? storedMonth : defaultBirthday.getMonth();
+    });
+
+    const [day, setDay] = useState(() => {
+        const storedDay = parseInt(localStorage.getItem('day'));
+        return !isNaN(storedDay) ? storedDay : defaultBirthday.getDate();
+    });
+
     const [color, setColor] = useState(randomColor());
 
-    const stored = {name, month, day, color};
+    const stored = { name, month, day, color };
     const isBirthdayToday = now.getMonth() === month && now.getDate() === day;
+
+    useEffect(() => {
+        localStorage.setItem('name', name);
+    }, [name]);
+
+    useEffect(() => {
+        localStorage.setItem('month', month);
+    }, [month]);
+
+    useEffect(() => {
+        localStorage.setItem('day', day);
+    }, [day]);
 
     function handleEditComplete(result) {
         console.log("handleEditComplete", result);
