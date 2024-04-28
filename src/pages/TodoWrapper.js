@@ -10,6 +10,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const TodoWrapper = () => {
   const { user, isAuthenticated } = useAuth0();
   const [todos, setTodos] = useState([]);
+  const [editingId, setEditingId] = useState(null); // Track the id of the todo being edited
 
   // Load todos from local storage when the component mounts
   useEffect(() => {
@@ -25,7 +26,7 @@ export const TodoWrapper = () => {
   }, [todos]);
 
   const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false }; // Added isEditing
+    const newTodo = { id: uuidv4(), task: todo, completed: false }; // Removed isEditing
     setTodos([...todos, newTodo]);
     console.log('User ID:', user.sub); 
     console.log(user)
@@ -38,21 +39,13 @@ export const TodoWrapper = () => {
     axios.post("http://localhost:5000/todosTest", titleTest, {
       headers: {
         "Content-Type": "application/json",
-        // Remove the Access-Control-Allow-Origin header, it's a response header set by the server
-        // Add Authorization header with your actual JWT token
-        // "Authorization": "Bearer your_actual_token_here",
-
-        // comment out the JTW function 
       }
     })
     .then((response) => {
       console.log('Todo added:', response.data);
-      // You might want to update your state here if needed
     })
     .catch((error) => {
       console.error('There has been a problem with your post operation:', error);
-      // Handle any errors here
-      // Optionally, remove the optimistically added todo if the POST fails
     });
   };
 
@@ -67,19 +60,16 @@ export const TodoWrapper = () => {
     setTodos(updatedTodos);
   };
 
+  const editTodo = (id) => {
+    setEditingId(id); // Set the editingId to the id of the todo being edited
+  };
+
   const editTask = (task, id) => {
     const updatedTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, task } : todo
     );
     setTodos(updatedTodos);
-  };
-
-  const editTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
-      )
-    );
+    setEditingId(null); // Reset editingId after editing is done
   };
 
   return (
@@ -87,7 +77,7 @@ export const TodoWrapper = () => {
       <h1 className="task-title">My Tasks for Today</h1>
       <TodoForm addTodo={addTodo} />
       {todos.map((todo) =>
-        todo.isEditing ? (
+        editingId === todo.id ? (
           <EditTodoForm key={todo.id} editTodo={editTask} task={todo} />
         ) : (
           <Todo

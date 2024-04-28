@@ -13,14 +13,26 @@ const PomodoroPage = () => {
     const storedSessionCount = localStorage.getItem("sessionCount");
     return storedSessionCount ? parseInt(storedSessionCount) : 0;
   });
+  const [completedMinutes, setCompletedMinutes] = useState(() => {
+    const storedCompletedMinutes = localStorage.getItem("completedMinutes");
+    return storedCompletedMinutes ? parseInt(storedCompletedMinutes) : 0;
+  });
 
   useEffect(() => {
     localStorage.setItem("sessionCount", sessionCount.toString());
   }, [sessionCount]);
 
+  useEffect(() => {
+    localStorage.setItem("completedMinutes", completedMinutes.toString());
+  }, [completedMinutes]);
+
   // Function to increment completedPomodoros and update localStorage
   const incrementCompletedPomodoros = () => {
-    setSessionCount(prevSessionCount => prevSessionCount + 1);
+     setSessionCount(prevSessionCount => prevSessionCount + 1);
+  setCompletedMinutes(prevCompletedMinutes => {
+    console.log("Updating completed minutes...", prevCompletedMinutes + workMinutes);
+    return prevCompletedMinutes + workMinutes;
+  });
   };
 
   return (
@@ -71,7 +83,10 @@ const PomodoroPage = () => {
           <div className="h-1/5 bg-gray-700 p-4">
             <Function incrementCompletedPomodoros={incrementCompletedPomodoros} />
           </div>
-          <div className="text-white">Completed Sessions: {sessionCount}</div>
+          <div className="text-white">
+            Completed Sessions: {sessionCount} <br />
+            Completed Minutes: {completedMinutes}
+          </div>
         </SettingsContext.Provider>
       </div>
     </div>
