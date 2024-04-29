@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { createAuth0Client } from '@auth0/auth0-spa-js';
+import { createAuth0Client } from "@auth0/auth0-spa-js";
 
 const DEFAULT_REDIRECT_CALLBACK = () =>
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -53,6 +53,11 @@ export const Auth0Provider = ({
     setIsAuthenticated(true);
     setUser(user);
   };
+
+  if (loading) {
+    return <div>Loading authentication...</div>; // Add a loading indicator while authentication is in progress
+  }
+
   return (
     <Auth0Context.Provider
       value={{

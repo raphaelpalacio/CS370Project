@@ -90,6 +90,7 @@ app.get("/get-channels", async (req, res) => {
   }
 });
 
+
 // Endpoint to delete a channel
 app.delete("/delete-channel", async (req, res) => {
   const { username, channelId } = req.body;
@@ -113,13 +114,14 @@ app.post("/request-join-channel", async (req, res) => {
   try {
     // You might want to check if the user meets certain criteria before allowing them to join
     const channel = serverSideClient.channel("team", channelId);
-    await channel.addMembers([username]); // This action could be contingent on approval
+    await channel.addMembers([username]);  // This action could be contingent on approval
     res.status(200).json({ message: "Join request submitted successfully." });
   } catch (err) {
     console.error("Failed to submit join request:", err);
     res.status(500).json({ err: err.message });
   }
 });
+
 
 app.listen(7000, () => {
   console.log(`Server running on PORT 7000`);
