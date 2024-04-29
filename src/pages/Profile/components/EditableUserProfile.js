@@ -50,10 +50,13 @@ export default function EditableUserProfile({
     };
 
     calcButtonTextColor(color);
+    const h2Style = {
+        color: 'black', // Change color to your desired color
+    };
 
     return <>
         <Group>            
-            <h2>Name:</h2>
+            <h2 style={h2Style}>Name:</h2>
             <input
                 type='text'
                 value={name}
@@ -61,7 +64,7 @@ export default function EditableUserProfile({
             />            
         </Group>
         <Group>            
-            <h2>Birthday:</h2>            
+            <h2 style={h2Style}>Birthday:</h2>            
             
             <select
                 value={month}

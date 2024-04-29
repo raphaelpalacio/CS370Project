@@ -51,6 +51,7 @@ h1 {
   border: none;
   padding: 0.55rem;
   cursor: pointer;
+  height : 40px;
 }
 
 .Todo {
@@ -98,6 +99,11 @@ h1 {
   h1 {
     font-size: 1.5rem; /* Smaller text for smaller screens */
   }
+}
+
+.scrollable {
+  max-height: 300px; /* Adjust this value as needed */
+  overflow-y: auto;
 }
 
 .FullHeightTodoWrapper {

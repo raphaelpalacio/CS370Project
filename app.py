@@ -1,5 +1,13 @@
 from flask import Flask, jsonify, request, abort, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey, Table
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base
+
+from datetime import datetime
+
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -14,16 +22,22 @@ import os
 
 # Initialize Flask App
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://pomodoroCS370:pomodoroAdmin370!@pomodoroplus.c9eokc6gmtps.us-east-1.rds.amazonaws.com:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['CORS_HEADERS'] = 'Content-Type'
+
+
 
 # Initialize DB
 db = SQLAlchemy(app)
+
+# Initialize Migrate
+migrate = Migrate(app, db)
 
 # Load environment variables
 load_dotenv()
@@ -34,12 +48,97 @@ API_AUDIENCE = os.getenv('API_AUDIENCE')
 ALGORITHMS = ['RS256']
 
 
-# Spotify configuration
-SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
-SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'  # Make sure to add this in your Spotify app settings
-SPOTIFY_SCOPES = 'user-read-playback-state user-modify-playback-state'  # Example scopes
+# # Make all of the tables straight to SQL to PGAdmin
+# Base = declarative_base()
 
+# Association table for Users and Study Groups
+StudyGroupMember = db.Table('StudyGroupMember',
+    db.Column('uID', db.Integer, db.ForeignKey('user.uID'), primary_key=True),
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True)
+)
+
+# Association table for Study Groups and Channels
+StudyGroupChannel = db.Table('StudyGroupChannel',
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True),
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True)
+)
+
+# Association table for Channels and Messages
+ChannelMessage = db.Table('ChannelMessage',
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True),
+    db.Column('mID', db.Integer, db.ForeignKey('message.mID'), primary_key=True)
+)
+
+class User(db.Model):
+    __tablename__ = 'user'
+    uID = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(40), unique=True, nullable=False)
+    email = db.Column(db.String(254), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    role = db.Column(db.Integer, nullable=False)
+    study_groups = db.relationship('StudyGroup', secondary=StudyGroupMember, back_populates='members')
+
+class ToDo(db.Model):
+    __tablename__ = 'todo'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    is_complete = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+
+class Session(db.Model):
+    __tablename__ = 'session'
+    sID = db.Column(db.Integer, primary_key=True)
+    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=True)
+    duration = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.Integer, nullable=False)
+    sessions_studied = db.Column(db.Integer, default=0)  # New column to track completed sessions
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Playlist(db.Model):
+    __tablename__ = 'playlist'
+    pID = db.Column(db.Integer, primary_key=True)
+    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    playlist_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Channel(db.Model):
+    __tablename__ = 'channel'
+    cID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    channel_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    study_groups = db.relationship('StudyGroup', secondary=StudyGroupChannel, back_populates='channels')
+    messages = db.relationship('Message', secondary=ChannelMessage, back_populates='channels')
+
+class Message(db.Model):
+    __tablename__ = 'message'
+    mID = db.Column(db.Integer, primary_key=True)
+    senderID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    edited_at = db.Column(db.DateTime, nullable=True)
+    channels = db.relationship('Channel', secondary=ChannelMessage, back_populates='messages')
+
+class StudyGroup(db.Model):
+    __tablename__ = 'study_group'
+    sgID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    group_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
+    members = db.relationship('User', secondary=StudyGroupMember, back_populates='study_groups')
+    channels = db.relationship('Channel', secondary=StudyGroupChannel, back_populates='study_groups')
+
+# # Setup the database connection and engine
+# engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db')
+# Base.metadata.create_all(bind=engine)
 
 # Helper Functions
 def get_token_auth_header():
@@ -111,112 +210,13 @@ def is_token_blacklisted(token):
     # You would need to create a storage mechanism for the blacklisted tokens
 blacklisted_tokens = set()
 
-# Models
-class User(db.Model):
-    __tablename__ = 'user'
-    uID = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(40), unique=True, nullable=False)
-    email = db.Column(db.String(254), unique=True, nullable=False)  # 254 character limit
-    password = db.Column(db.String(60), nullable=False)  # Bcrypt hashes are 60 chars
-    updated_at = db.Column(db.DateTime, nullable=True)
-    role = db.Column(db.Integer, nullable=False)
-    # Many-to-Many Relationship with StudyGroup
-    study_groups = db.relationship('StudyGroup', secondary='StudyGroupMember',
-                                   back_populates='members')
-
-class ToDo(db.Model):
-    __tablename__ = 'todo'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(255))
-    is_complete = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-
-    def __repr__(self):
-        return '<ToDo %r>' % self.title
-class Session(db.Model):
-    __tablename__ = 'session'
-    sID = db.Column(db.Integer, primary_key=True)
-    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=True)
-    duration = db.Column(db.Integer, nullable=True)
-    status = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-class Playlist(db.Model):
-    __tablename__ = 'playlist'
-    pID = db.Column(db.Integer, primary_key=True)
-    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-    playlist_name = db.Column(db.String(50), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-class Channel(db.Model):
-    __tablename__ = 'channel'
-    cID = db.Column(db.Integer, primary_key=True)
-    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-    channel_name = db.Column(db.String(50), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=True)
-    # Many-to-Many Relationship with StudyGroup
-    study_groups = db.relationship('StudyGroup', secondary='StudyGroupChannel',
-                                   back_populates='channels')
-    # Many-to-Many Relationship with Message
-    messages = db.relationship('Message', secondary='ChannelMessage',
-                               back_populates='channels')
-
-class Message(db.Model):
-    __tablename__ = 'message'
-    mID = db.Column(db.Integer, primary_key=True)
-    senderID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-    text = db.Column(db.String(500), nullable=False)
-    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
-    edited_at = db.Column(db.DateTime, nullable=True)
-    # Many-to-Many Relationship with Channel
-    channels = db.relationship('Channel', secondary='ChannelMessage',
-                               back_populates='messages')
-
-# Many to Many Relationship Models
-class StudyGroup(db.Model):
-    __tablename__ = 'study_group'
-    sgID = db.Column(db.Integer, primary_key=True)
-    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
-    group_name = db.Column(db.String(50), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime)
-    duration = db.Column(db.Integer)
-     # Many-to-Many Relationships
-    members = db.relationship('User', secondary='StudyGroupMember',
-                              back_populates='study_groups')
-    channels = db.relationship('Channel', secondary='StudyGroupChannel',
-                               back_populates='study_groups')
-
-# Association Tables
-# Association table for Users and Study Groups
-StudyGroupMember = db.Table('StudyGroupMember',
-    db.Column('uID', db.Integer, db.ForeignKey('user.uID'), primary_key=True),
-    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True)
-)
-
-# Association table for Study Groups and Channels
-StudyGroupChannel = db.Table('StudyGroupChannel',
-    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True),
-    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True)
-)
-
-# Association table for Channels and Messages
-ChannelMessage = db.Table('ChannelMessage',
-    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True),
-    db.Column('mID', db.Integer, db.ForeignKey('message.mID'), primary_key=True)
-)
-
+# Routes
 @app.route('/')
 def index():
     return "Welcome to the Pomodoro API!"
 
 @app.route('/todos', methods=['GET'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type', 'Authorization'])
 def get_todos():
     user_sub = current_user()  # This is the unique identifier for the user.
     user = User.query.filter_by(sub=user_sub).first()  # Find the user in the database.
@@ -229,15 +229,21 @@ def get_todos():
 
 
 @app.route('/todos', methods=['POST'])
-@cross_origin()
 def add_todo():
     user_id = current_user()
     data = request.json
     new_todo = ToDo(title=data['title'], description=data['description'], user_id=user_id)
     db.session.add(new_todo)
     db.session.commit()
-    print("hello world"),
     return jsonify({'message': 'ToDo created successfully.'}), 201
+
+@app.route('/addTodo', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def add_todos():
+    data = request.json
+    print(data)
+    return jsonify('todo added')
+    
 
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
 def update_todo(todo_id):
@@ -249,28 +255,42 @@ def update_todo(todo_id):
     db.session.commit()
     return jsonify({'message': 'ToDo updated successfully.'})
 
-@app.route('/todos/togglecomplete/<int:todo_id>', methods=['PUT'])
-def toggle_complete(todo_id):
-    todo = ToDo.query.get_or_404(todo_id)
-    todo.is_complete = not todo.is_complete
-    db.session.commit()
-    return jsonify({'message': 'ToDo complete toggle successfully.'})
-
-@app.route('/todos/<int:todo_id>', methods=['DELETE'])
-def delete_todo(todo_id):
-    todo = ToDo.query.get_or_404(todo_id)
-    db.session.delete(todo)
-    db.session.commit()
-    return jsonify({'message': 'ToDo deleted successfully.'})
-
+@app.route('/todosDelete', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def delete_todo():
+    data = request.json
+    print(data)
+    return jsonify('todo deleted')
 
 @app.route('/sessions/start', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
 def start_session():
     data = request.json
     new_session = Session(uID=data['uID'], start_time=datetime.utcnow(), duration=data['duration'], status=1)
     db.session.add(new_session)
     db.session.commit()
     return jsonify({'message': 'Session started successfully.', 'session_id': new_session.sID}), 201
+
+@app.route('/session/counter', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def count_sessions():
+    session_id = request.json.get('session_id')
+    session = Session.query.filter_by(sID=session_id).first()
+    
+    if session:
+        if session.status == 1:  # Check if the session is currently active
+            session.status = 0   # Mark the session as completed
+            session.end_time = datetime.utcnow()  # Set the end time to now
+            session.sessions_studied += 1  # Increment the completed sessions count
+            db.session.commit()
+            return jsonify({'message': 'Session completed successfully.'}), 200
+        else:
+            return jsonify({'message': 'Session is already completed.'}), 400
+    else:
+        return jsonify({'message': 'Session not found.'}), 404
+
+
+
 
 @app.route('/sessions/stop', methods=['POST'])
 def stop_session():
@@ -289,6 +309,21 @@ def session_history():
     sessions = Session.query.all()
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
+
+# @app.route('/session/counter', methods=['POST'])
+# def create_session_counter():
+#     data = request.json
+#     new_counter = session_count(uID=data['uID'], session_count=data['session_count'])
+#     db.session.add(new_counter)
+#     db.session.commit()
+#     return jsonify({'message': 'Session counter created successfully.', 'counter_id': new_counter.scID}), 201
+
+
+# @app.route('/session/count', methods=['GET'])
+# def session_count():
+#     session_count = session_count.query.all()
+#     session_count_data = [{'counter_id': counter.scID, 'session_count': counter.session_count} for counter in session_count]
+#     return jsonify(session_count_data), 200
 
 @app.route('/users/register', methods=['POST'])
 def register_user():
@@ -412,37 +447,6 @@ def delete_user():
     # Return success response
     return jsonify({"message": "User deleted successfully"}), 200
 
-
-@app.route('/login/spotify')
-def login_spotify():
-    auth_url = f"https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={SPOTIFY_REDIRECT_URI}&scope={SPOTIFY_SCOPES}"
-    return redirect(auth_url)
-
-@app.route('/callback')
-def spotify_callback():
-    code = request.args.get('code')
-    auth_token_url = 'https://accounts.spotify.com/api/token'
-    data = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': SPOTIFY_REDIRECT_URI,
-        'client_id': SPOTIFY_CLIENT_ID,
-        'client_secret': SPOTIFY_CLIENT_SECRET
-    }
-    post_request = requests.post(auth_token_url, data=data)
-    response_data = post_request.json()
-    access_token = response_data.get('access_token')
-    refresh_token = response_data.get('refresh_token')
-
-    # Here, you would store the access and refresh tokens in your database associated with the user
-    # For demonstration, storing it in session
-    session['access_token'] = access_token
-    session['refresh_token'] = refresh_token
-
-    # Redirect to a page where you want the user to go next
-    return redirect('/homePage')
-
-
 @app.route('/auth/callback')
 def auth0_callback():
     code = request.args.get('code')
@@ -459,7 +463,7 @@ def auth0_callback():
         'redirect_uri': os.getenv('AUTH0_CALLBACK_URL')
     }
 
-    response = requests.post(token_url, data=payload, headers=headers)
+    response = request.post(token_url, data=payload, headers=headers)
     tokens = response.json()
     id_token = tokens.get('id_token')
 
@@ -470,7 +474,6 @@ def auth0_callback():
     Here, you would typically check if the user exists in your database,
     create a new user if necessary, and establish a session or token for your app.
     """
-    
     # Decode the token to get user info
     user_info = verify_decode_jwt(id_token)
     if not user_info:
@@ -506,5 +509,7 @@ app.secret_key = 'your_secret_key'
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Ensures tables are created before the first request if they don't exist
+        db.create_all()
+        migrate = Migrate(app, db)
+    #Base.metadata.create_all(bind=db.engine)  # Ensures tables are created before the first request if they don't exist
     app.run(debug=True)

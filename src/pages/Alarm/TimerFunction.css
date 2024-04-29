@@ -25,7 +25,7 @@ button{
 
 button.with-text{
   width: auto;
-  background-color:rgba(255,255,255,0.1);
+  background-color:rgb(55 65 81 / var(--tw-bg-opacity));
   border-radius:10px;
   padding: 10px 20px;
   font-size: 1.4rem;
