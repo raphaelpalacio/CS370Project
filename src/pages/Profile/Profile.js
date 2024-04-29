@@ -95,7 +95,6 @@ function Profile() {
                                     : <h1>My Profile</h1>
                             }
                             <div>Total Sessions: {sessionCount}</div>
-                            <div>Total Minutes: {totalMinutes}</div>
                             <UserProfile
                                 stored={stored}
                                 startEditCallback={() => setEditMode(true)}
