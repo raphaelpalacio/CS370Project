@@ -158,6 +158,120 @@
 
 
 
+// import React, { useState, useEffect } from "react";
+// import {
+//   Chat,
+//   Channel,
+//   Thread,
+//   Window,
+//   ChannelList,
+//   MessageList,
+//   MessageInput,
+//   useChannelStateContext,
+// } from "stream-chat-react";
+// import { StreamChat } from "stream-chat";
+// import axios from "axios";
+// import { useAuth0 } from "@auth0/auth0-react"; // import { useAuth0 } from "./auth0";
+
+// import "stream-chat-react/dist/css/index.css";
+
+// const chatClient = new StreamChat("8hbcax62bxrs"); // Note: Move sensitive data like this to environment variables
+
+// function ChatView() {
+//   const [channel, setChannel] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [newChannelName, setNewChannelName] = useState("");
+//   const { user, logout } = useAuth0();
+//   const username =
+//     user && user.email
+//       ? user.email.replace(/([^a-z0-9_-]+)/gi, "_")
+//       : "default_username";
+
+//   useEffect(() => {
+//     // Function to fetch token and channels has been simplified for clarity
+//   }, [user]);
+
+//   const createNewChannel = async () => {
+//     if (!newChannelName) return;
+//     setLoading(true);
+//     try {
+//       const response = await axios.post(
+//         "http://localhost:7000/create-channel",
+//         {
+//           username,
+//           channelName: newChannelName,
+//         }
+//       );
+//       const newChannel = chatClient.channel("team", response.data.channelName);
+//       await newChannel.watch();
+//       setChannel(newChannel);
+//       setNewChannelName("");
+//     } catch (err) {
+//       console.error("Failed to create channel:", err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   function CustomChannelHeader() {
+//     const { channel } = useChannelStateContext();
+
+//     return (
+//       <div className="str-chat__header-livestream">
+//         <div className="str-chat__header-livestream-left">
+//           <p className="str-chat__header-livestream-left--title">
+//             {channel.data.name}
+//           </p>
+//           <p className="str-chat__header-livestream-left--members">
+//             {channel.state.members.length} members,
+//             {channel.state.watcher_count} online
+//           </p>
+//         </div>
+//         <div className="str-chat__header-livestream-right">
+//           <button onClick={logout}>Logout</button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Simplified rendering logic
+//   if (loading || !user) {
+//     return <div>Loading chat...</div>;
+//   }
+
+//   return (
+//     <div>
+//       <Chat client={chatClient} theme="team light">
+//         <ChannelList
+//           options={{ subscribe: true, state: true }}
+//           filters={{ members: { $in: [username] } }}
+//         />
+//         <div style={{ position: "absolute", bottom: 0, width: "100%" }}>
+//           <input
+//             type="text"
+//             value={newChannelName}
+//             onChange={(e) => setNewChannelName(e.target.value)}
+//             placeholder="Enter new channel name"
+//           />
+//           <button onClick={createNewChannel}>Create Channel</button>
+//         </div>
+//         {channel && (
+//           <Channel channel={channel}>
+//             <Window>
+//               <CustomChannelHeader />
+//               <MessageList />
+//               <MessageInput focus />
+//             </Window>
+//             <Thread />
+//           </Channel>
+//         )}
+//       </Chat>
+//     </div>
+//   );
+// }
+
+// export default ChatView;
+
 import React, { useState, useEffect } from "react";
 import {
   Chat,
@@ -171,25 +285,55 @@ import {
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import axios from "axios";
-import { useAuth0 } from "@auth0/auth0-react"; // import { useAuth0 } from "./auth0";
+import { useAuth0 } from "@auth0/auth0-react";
+ // Updated import for Auth0
 
 import "stream-chat-react/dist/css/index.css";
 
-const chatClient = new StreamChat("8hbcax62bxrs"); // Note: Move sensitive data like this to environment variables
+const chatClient = new StreamChat("8hbcax62bxrs");
 
 function ChatView() {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [newChannelName, setNewChannelName] = useState("");
-  const { user, logout } = useAuth0();
-  const username =
-    user && user.email
-      ? user.email.replace(/([^a-z0-9_-]+)/gi, "_")
-      : "default_username";
+  const { user, logout, isAuthenticated, isLoading } = useAuth0(); // Destructure isAuthenticated and isLoading
+  const { getAccessTokenSilently } = useAuth0();
+  const username = user ? user.nickname : "default_username";
+
 
   useEffect(() => {
-    // Function to fetch token and channels has been simplified for clarity
+    const getTokenAndFetchChannels = async () => {
+      setLoading(true);
+      try {
+        const { getIdTokenClaims } = await getAccessTokenSilently(); // Assuming you have the function to get the access token silently
+        const token = await getIdTokenClaims();
+        chatClient.setUser(
+          {
+            id: username,
+            name: user.nickname,
+          },
+          token
+        );
+
+        // Fetch channels the user is a member of
+        const filter = { members: { $in: [username] } };
+        const channels = await chatClient.queryChannels(filter);
+        if (channels.length > 0) {
+          await channels[0].watch();
+          setChannel(channels[0]);
+        }
+      } catch (err) {
+        console.error("Error during token fetching or channel fetching:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      getTokenAndFetchChannels();
+    }
   }, [user]);
+
 
   const createNewChannel = async () => {
     if (!newChannelName) return;
@@ -198,7 +342,7 @@ function ChatView() {
       const response = await axios.post(
         "http://localhost:7000/create-channel",
         {
-          username,
+          username: user.email,
           channelName: newChannelName,
         }
       );
@@ -234,8 +378,7 @@ function ChatView() {
     );
   }
 
-  // Simplified rendering logic
-  if (loading || !user) {
+  if (loading || isLoading || !isAuthenticated) {
     return <div>Loading chat...</div>;
   }
 
@@ -244,7 +387,7 @@ function ChatView() {
       <Chat client={chatClient} theme="team light">
         <ChannelList
           options={{ subscribe: true, state: true }}
-          filters={{ members: { $in: [username] } }}
+          filters={{ members: { $in: [user.email] } }}
         />
         <div style={{ position: "absolute", bottom: 0, width: "100%" }}>
           <input
