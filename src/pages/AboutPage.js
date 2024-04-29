@@ -82,7 +82,7 @@ const AboutPage = () => {
           ensuring they can concentrate on work and take breaks systematically to avoid
         </p>
         <p className="text-md md:text-lg mb-6">
-          For CS370, our goal with this innovative web application is to provide a simple and intuitive interface for users to manage their time effectively;
+          For CS370, our goal was to develop an innovative web application is to provide a simple and intuitive interface for users to manage their time effectively;
           allowing our users to focus on what really matters - time with loved ones, hobbies, and personal growth.
         </p>
         
