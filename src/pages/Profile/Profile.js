@@ -1,51 +1,91 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import EditableUserProfile from './components/EditableUserProfile';
 import UserProfile from './components/UserProfile';
 
 function randomColor() {
-    return "#" + Math.floor(Math.random()*16777215).toString(16);
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 function randomName() {
-    return "Set You Name " 
+    return "Set Your Name";
 }
 
-function App() {
+function Profile() {
     const now = new Date(Date.now());
     const defaultBirthday = new Date(now.getTime() + 86400000);
 
     const [editMode, setEditMode] = useState(false);
+    const [name, setName] = useState(() => {
+        const storedName = localStorage.getItem('name');
+        return storedName ? storedName : randomName();
+    });
 
-    const [name, setName] = useState(randomName());
-    const [month, setMonth] = useState(defaultBirthday.getMonth());
-    const [day, setDay] = useState(defaultBirthday.getDate());
+    const [month, setMonth] = useState(() => {
+        const storedMonth = parseInt(localStorage.getItem('month'));
+        return !isNaN(storedMonth) ? storedMonth : defaultBirthday.getMonth();
+    });
+
+    const [day, setDay] = useState(() => {
+        const storedDay = parseInt(localStorage.getItem('day'));
+        return !isNaN(storedDay) ? storedDay : defaultBirthday.getDate();
+    });
+
     const [color, setColor] = useState(randomColor());
+    const [sessionCount, setSessionCount] = useState(() => {
+        const storedSessionCount = localStorage.getItem("sessionCount");
+        return storedSessionCount ? parseInt(storedSessionCount) : 0;
+    });
 
-    const stored = {name, month, day, color};
+    const [totalMinutes, setTotalMinutes] = useState(() => {
+        const storedTotalMinutes = parseFloat(localStorage.getItem('totalMinutes')) || 0;
+        return storedTotalMinutes;
+    });
+
+    const stored = { name, month, day, color };
     const isBirthdayToday = now.getMonth() === month && now.getDate() === day;
 
+    useEffect(() => {
+        localStorage.setItem('name', name);
+    }, [name]);
+
+    useEffect(() => {
+        localStorage.setItem('month', month);
+    }, [month]);
+
+    useEffect(() => {
+        localStorage.setItem('day', day);
+    }, [day]);
+
+    useEffect(() => {
+        localStorage.setItem("sessionCount", sessionCount.toString());
+    }, [sessionCount]);
+
+    useEffect(() => {
+        const storedTotalMinutes = parseFloat(localStorage.getItem('totalMinutes')) || 0;
+        setTotalMinutes(storedTotalMinutes);
+    }, []);
+
     function handleEditComplete(result) {
-        console.log("handleEditComplete", result);
         if (result != null) {
             setName(result.name);
             setMonth(result.month);
             setDay(result.day);
             setColor(result.color);
-        }        
+        }
         setEditMode(false);
     }
 
     return (
-        <div className="container" style={{ backgroundColor: 'navy', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
-            <div className="App" style={{ marginRight: '26%'}}>                 
+        <div className="container">
+            <div className="App">
                 {
                     editMode
                         ? <>
                             <h1>My Profile</h1>
                             <EditableUserProfile
-                                    stored={stored}
-                                    editCompleteCallback={handleEditComplete}                            
+                                stored={stored}
+                                editCompleteCallback={handleEditComplete}
                             />
                         </>
                         : <>
@@ -54,15 +94,17 @@ function App() {
                                     ? <div className="birthday">Happy Birthday!</div>
                                     : <h1>My Profile</h1>
                             }
+                            <div>Total Sessions: {sessionCount}</div>
+                            <div>Total Minutes: {totalMinutes}</div>
                             <UserProfile
-                                    stored={stored}
-                                    startEditCallback={() => setEditMode(true)}
+                                stored={stored}
+                                startEditCallback={() => setEditMode(true)}
                             />
                         </>
-                }            
+                }
             </div>
         </div>
     );
 }
 
-export default App;
+export default Profile;

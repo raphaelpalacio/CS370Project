@@ -34,10 +34,10 @@ const TypingAnimation = ({ phrases, className }) => {
   }, []);
 
   return (
-    <h1 className={className}>
+    <p className={className}>
       {`${phrases[index].substring(0, subIndex)}`}
       <span style={{ opacity: cursorVisible ? 1 : 0 }}>|</span>
-    </h1>
+    </p>
   );
 };
 

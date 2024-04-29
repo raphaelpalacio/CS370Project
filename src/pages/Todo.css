@@ -54,6 +54,7 @@ h1 {
   border: none;
   padding: 0.55rem;
   cursor: pointer;
+  height : 40px;
 }
 
 .Todo {
@@ -103,6 +104,8 @@ h1 {
   }
 }
 
+
+
 .FullHeightTodoWrapper {
   height: 100%;
   overflow-y: auto; /* Allows scrolling within the TodoWrapper */
@@ -113,6 +116,11 @@ h1 {
   padding: 2rem;
   border-radius: 5px;
   height: 100%; /* Makes TodoWrapper fill the FullHeightTodoWrapper */
+}
+
+.todo-list {
+  max-height: 500px; /* Adjust the max height as needed */
+  overflow-y: 400; /* Enable vertical scrolling */
 }
 
 /* Ensures text inside TodoWrapper is white */

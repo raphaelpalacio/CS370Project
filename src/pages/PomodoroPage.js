@@ -1,20 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
 import ChatComponent from "./ChatComponent"; // Import the ChatComponent
-import Timer from "./Alarm/Timer"; // Ensure this path is correct
-import Function from "./Alarm/TimerFunction";
+import TimerFunction from "./Alarm/TimerFunction";
 import SettingsContext from "./Alarm/SettingsContext";
+import axios from "axios"; // Make sure to install axios using `npm install axios`
 
 const PomodoroPage = () => {
   const [completedPomodoros, setCompletedPomodoros] = useState(0); // State for completedPomodoros
   const [showSettings, setShowSettings] = useState(false);
   const [workMinutes, setWorkMinutes] = useState(45);
   const [breakMinutes, setBreakMinutes] = useState(15);
-  const [sessionCount, setSessionCount] = useState(0);
 
-  // Function to increment completedPomodoros
+
+  const [sessionCount, setSessionCount] = useState(() => {
+    const storedSessionCount = localStorage.getItem("sessionCount");
+    return storedSessionCount ? parseInt(storedSessionCount) : 0;
+  });
+
+
+  const [completedMinutes, setCompletedMinutes] = useState(() => {
+    const storedCompletedMinutes = localStorage.getItem("completedMinutes");
+    return storedCompletedMinutes ? parseInt(storedCompletedMinutes) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sessionCount", sessionCount.toString());
+  }, [sessionCount]);
+
+  useEffect(() => {
+    localStorage.setItem("completedMinutes", completedMinutes.toString());
+  }, [completedMinutes]);
+
+   // Function to complete a session and post to backend
+   const completeSession = async (sessionId) => {
+    console.log("Attempting to complete session", sessionId); // Debug: Check if this line is reached
+    try {
+      const response = await axios.post("http://localhost:5000/session/counter", { session_id: sessionId });
+      console.log(response.data.message); // Debug: Check the response from the backend
+      incrementCompletedPomodoros(); // Increment session count and completed minutes
+    } catch (error) {
+      console.error("There was an error completing the session", error.response?.data || error.message);
+    }
+  };
+
+  // Function to increment completedPomodoros and update localStorage
   const incrementCompletedPomodoros = () => {
-    setCompletedPomodoros((prevCount) => prevCount + 1);
+     setSessionCount(prevSessionCount => prevSessionCount + 1);
+  setCompletedMinutes(prevCompletedMinutes => {
+    console.log("Updating completed minutes...", prevCompletedMinutes + workMinutes);
+    return prevCompletedMinutes + workMinutes;
+  });
   };
 
   return (
@@ -59,13 +94,19 @@ const PomodoroPage = () => {
             setWorkMinutes,
             setBreakMinutes,
             sessionCount,
-            setSessionCount,
+            setSessionCount
           }}
         >
           <div className="h-1/5 bg-gray-700 p-4">
-            <Function />
+          <TimerFunction 
+            incrementCompletedPomodoros={incrementCompletedPomodoros} 
+            onSessionComplete={completeSession} // Pass the completeSession function as a prop to TimerFunction
+          />
           </div>
-          <div className="text-white">Completed Sessions: {sessionCount}</div>
+          <div className="text-white">
+            Completed Sessions: {sessionCount} <br />
+
+          </div>
         </SettingsContext.Provider>
       </div>
     </div>
