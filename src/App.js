@@ -33,7 +33,7 @@ function App() {
         <Route
           path="/"
           element={
-            <div className="pt-20">
+            <div className="">
               <HomePage />
             </div>
           }

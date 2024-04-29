@@ -55,7 +55,7 @@ input[type="color"] {
   top: 4px;
 }
 
-button {
+/* button {
   border: 1px solid darkgray;
   background-color: gray;
   border-radius: 4px;
@@ -63,7 +63,7 @@ button {
   padding: 0px 1.25em;
   margin: 1em 0.5em;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.205);
-}
+} */
 
 button:hover {
   box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.356);

@@ -31,6 +31,8 @@
     "serve-static": "^1.15.0",
     "socket.io-client": "^4.7.5",
     "start": "^5.1.0",
+    "stream-chat": "^8.26.0",
+    "stream-chat-react": "^11.15.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -56,5 +58,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
   }
 }
