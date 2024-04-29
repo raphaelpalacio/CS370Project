@@ -278,20 +278,22 @@ def count_sessions():
     print(data)
     return jsonify('session started')
 
-    # session_id = request.json.get('session_id')
-    #     session = Session.query.filter_by(sID=session_id).first()
-        
-    #     if session:
-    #         if session.status == 1:  # Check if the session is currently active
-    #             session.status = 0   # Mark the session as completed
-    #             session.end_time = datetime.utcnow()  # Set the end time to now
-    #             session.sessions_studied += 1  # Increment the completed sessions count
-    #             db.session.commit()
-    #             return jsonify({'message': 'Session completed successfully.'}), 200
-    #         else:
-    #             return jsonify({'message': 'Session is already completed.'}), 400
-    #     else:
-    #         return jsonify({'message': 'Session not found.'}), 404
+# def count_sessions():
+#     session_id = request.json.get('session_id')
+#     session = Session.query.filter_by(sID=session_id).first()
+    
+#     if session:
+#         if session.status == 1:  # Check if the session is currently active
+#             session.status = 0   # Mark the session as completed
+#             session.end_time = datetime.utcnow()  # Set the end time to now
+#             session.sessions_studied += 1  # Increment the completed sessions count
+#             db.session.commit()
+#             return jsonify({'message': 'Session completed successfully.'}), 200
+#         else:
+#             return jsonify({'message': 'Session is already completed.'}), 400
+#     else:
+#         return jsonify({'message': 'Session not found.'}), 404
+    
 
 
 
