@@ -28,7 +28,7 @@ bcrypt = Bcrypt(app)
 # Configuration
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:W3ddings@localhost/pomodoroplus-db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://pomodoroCS370:pomodoroAdmin370!@pomodoroplus.c9eokc6gmtps.us-east-1.rds.amazonaws.com:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -48,97 +48,97 @@ API_AUDIENCE = os.getenv('API_AUDIENCE')
 ALGORITHMS = ['RS256']
 
 
-# Make all of the tables straight to SQL to PGAdmin
-Base = declarative_base()
+# # Make all of the tables straight to SQL to PGAdmin
+# Base = declarative_base()
 
 # Association table for Users and Study Groups
-StudyGroupMember = Table('StudyGroupMember', Base.metadata,
-    Column('uID', Integer, ForeignKey('user.uID'), primary_key=True),
-    Column('sgID', Integer, ForeignKey('study_group.sgID'), primary_key=True)
+StudyGroupMember = db.Table('StudyGroupMember',
+    db.Column('uID', db.Integer, db.ForeignKey('user.uID'), primary_key=True),
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True)
 )
 
 # Association table for Study Groups and Channels
-StudyGroupChannel = Table('StudyGroupChannel', Base.metadata,
-    Column('sgID', Integer, ForeignKey('study_group.sgID'), primary_key=True),
-    Column('cID', Integer, ForeignKey('channel.cID'), primary_key=True)
+StudyGroupChannel = db.Table('StudyGroupChannel',
+    db.Column('sgID', db.Integer, db.ForeignKey('study_group.sgID'), primary_key=True),
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True)
 )
 
 # Association table for Channels and Messages
-ChannelMessage = Table('ChannelMessage', Base.metadata,
-    Column('cID', Integer, ForeignKey('channel.cID'), primary_key=True),
-    Column('mID', Integer, ForeignKey('message.mID'), primary_key=True)
+ChannelMessage = db.Table('ChannelMessage',
+    db.Column('cID', db.Integer, db.ForeignKey('channel.cID'), primary_key=True),
+    db.Column('mID', db.Integer, db.ForeignKey('message.mID'), primary_key=True)
 )
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'user'
-    uID = Column(Integer, primary_key=True)
-    username = Column(String(40), unique=True, nullable=False)
-    email = Column(String(254), unique=True, nullable=False)
-    password = Column(String(60), nullable=False)
-    updated_at = Column(DateTime, nullable=True)
-    role = Column(Integer, nullable=False)
-    study_groups = relationship('StudyGroup', secondary=StudyGroupMember, back_populates='members')
+    uID = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(40), unique=True, nullable=False)
+    email = db.Column(db.String(254), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    role = db.Column(db.Integer, nullable=False)
+    study_groups = db.relationship('StudyGroup', secondary=StudyGroupMember, back_populates='members')
 
-class ToDo(Base):
+class ToDo(db.Model):
     __tablename__ = 'todo'
-    id = Column(Integer, primary_key=True)
-    title = Column(String(100), nullable=False)
-    description = Column(String(255))
-    is_complete = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, onupdate=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('user.uID'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    is_complete = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
 
-class Session(Base):
+class Session(db.Model):
     __tablename__ = 'session'
-    sID = Column(Integer, primary_key=True)
-    uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=True)
-    duration = Column(Integer, nullable=True)
-    status = Column(Integer, nullable=False)
-    sessions_studied = Column(Integer, default=0)  # New column to track completed sessions
-    created_at = Column(DateTime, default=datetime.utcnow)
+    sID = db.Column(db.Integer, primary_key=True)
+    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=True)
+    duration = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.Integer, nullable=False)
+    sessions_studied = db.Column(db.Integer, default=0)  # New column to track completed sessions
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-class Playlist(Base):
+class Playlist(db.Model):
     __tablename__ = 'playlist'
-    pID = Column(Integer, primary_key=True)
-    uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    playlist_name = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    pID = db.Column(db.Integer, primary_key=True)
+    uID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    playlist_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-class Channel(Base):
+class Channel(db.Model):
     __tablename__ = 'channel'
-    cID = Column(Integer, primary_key=True)
-    creatorID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    channel_name = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=True)
-    study_groups = relationship('StudyGroup', secondary=StudyGroupChannel, back_populates='channels')
-    messages = relationship('Message', secondary=ChannelMessage, back_populates='channels')
+    cID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    channel_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    study_groups = db.relationship('StudyGroup', secondary=StudyGroupChannel, back_populates='channels')
+    messages = db.relationship('Message', secondary=ChannelMessage, back_populates='channels')
 
-class Message(Base):
+class Message(db.Model):
     __tablename__ = 'message'
-    mID = Column(Integer, primary_key=True)
-    senderID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    text = Column(String(500), nullable=False)
-    sent_at = Column(DateTime, default=datetime.utcnow)
-    edited_at = Column(DateTime, nullable=True)
-    channels = relationship('Channel', secondary=ChannelMessage, back_populates='messages')
+    mID = db.Column(db.Integer, primary_key=True)
+    senderID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    edited_at = db.Column(db.DateTime, nullable=True)
+    channels = db.relationship('Channel', secondary=ChannelMessage, back_populates='messages')
 
-class StudyGroup(Base):
+class StudyGroup(db.Model):
     __tablename__ = 'study_group'
-    sgID = Column(Integer, primary_key=True)
-    creatorID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    group_name = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime)
-    members = relationship('User', secondary=StudyGroupMember, back_populates='study_groups')
-    channels = relationship('Channel', secondary=StudyGroupChannel, back_populates='study_groups')
+    sgID = db.Column(db.Integer, primary_key=True)
+    creatorID = db.Column(db.Integer, db.ForeignKey('user.uID'), nullable=False)
+    group_name = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
+    members = db.relationship('User', secondary=StudyGroupMember, back_populates='study_groups')
+    channels = db.relationship('Channel', secondary=StudyGroupChannel, back_populates='study_groups')
 
-# Setup the database connection and engine
-engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db')
-Base.metadata.create_all(bind=engine)
+# # Setup the database connection and engine
+# engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db')
+# Base.metadata.create_all(bind=engine)
 
 # Helper Functions
 def get_token_auth_header():
@@ -262,6 +262,15 @@ def delete_todo():
     print(data)
     return jsonify('todo deleted')
 
+@app.route('/sessions/start', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def start_session():
+    data = request.json
+    new_session = Session(uID=data['uID'], start_time=datetime.utcnow(), duration=data['duration'], status=1)
+    db.session.add(new_session)
+    db.session.commit()
+    return jsonify({'message': 'Session started successfully.', 'session_id': new_session.sID}), 201
+
 @app.route('/session/counter', methods=['POST'])
 @cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
 def count_sessions():
@@ -281,13 +290,7 @@ def count_sessions():
         return jsonify({'message': 'Session not found.'}), 404
 
 
-@app.route('/sessions/start', methods=['POST'])
-def start_session():
-    data = request.json
-    new_session = Session(uID=data['uID'], start_time=datetime.utcnow(), duration=data['duration'], status=1)
-    db.session.add(new_session)
-    db.session.commit()
-    return jsonify({'message': 'Session started successfully.', 'session_id': new_session.sID}), 201
+
 
 @app.route('/sessions/stop', methods=['POST'])
 def stop_session():
@@ -444,37 +447,6 @@ def delete_user():
     # Return success response
     return jsonify({"message": "User deleted successfully"}), 200
 
-
-@app.route('/login/spotify')
-def login_spotify():
-    auth_url = f"https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={SPOTIFY_REDIRECT_URI}&scope={SPOTIFY_SCOPES}"
-    return redirect(auth_url)
-
-@app.route('/callback')
-def spotify_callback():
-    code = request.args.get('code')
-    auth_token_url = 'https://accounts.spotify.com/api/token'
-    data = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': SPOTIFY_REDIRECT_URI,
-        'client_id': SPOTIFY_CLIENT_ID,
-        'client_secret': SPOTIFY_CLIENT_SECRET
-    }
-    post_request = requests.post(auth_token_url, data=data)
-    response_data = post_request.json()
-    access_token = response_data.get('access_token')
-    refresh_token = response_data.get('refresh_token')
-
-    # Here, you would store the access and refresh tokens in your database associated with the user
-    # For demonstration, storing it in session
-    session['access_token'] = access_token
-    session['refresh_token'] = refresh_token
-
-    # Redirect to a page where you want the user to go next
-    return redirect('/homePage')
-
-
 @app.route('/auth/callback')
 def auth0_callback():
     code = request.args.get('code')
@@ -491,7 +463,7 @@ def auth0_callback():
         'redirect_uri': os.getenv('AUTH0_CALLBACK_URL')
     }
 
-    response = requests.post(token_url, data=payload, headers=headers)
+    response = request.post(token_url, data=payload, headers=headers)
     tokens = response.json()
     id_token = tokens.get('id_token')
 
