@@ -15,7 +15,9 @@
     }
   ],
   "background": {
-    "service_worker": "service_worker.js"
+    "service_worker": "service_worker.js",
+    "scripts": ["background.js"],
+    "persistent": false
   },
   "permissions": [
     "tabs",
