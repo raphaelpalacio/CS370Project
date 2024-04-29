@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import Profile from "./pages/Profile/Profile";
 import PomodoroPage from "./pages/PomodoroPage";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react"; // import { useAuth0 } from "./auth0";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -31,7 +31,7 @@ function App() {
           left: "50%",
           transform: "translate(-50%, -50%)",
           color: "navy",
-          fontSize: "2em", // Adjust the font size as needed
+          fontSize: "2em",
         }}
       >
         Loading...
