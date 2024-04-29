@@ -37,6 +37,11 @@ function Profile() {
         return storedSessionCount ? parseInt(storedSessionCount) : 0;
     });
 
+    const [totalMinutes, setTotalMinutes] = useState(() => {
+        const storedTotalMinutes = parseFloat(localStorage.getItem('totalMinutes')) || 0;
+        return storedTotalMinutes;
+    });
+
     const stored = { name, month, day, color };
     const isBirthdayToday = now.getMonth() === month && now.getDate() === day;
 
@@ -53,9 +58,13 @@ function Profile() {
     }, [day]);
 
     useEffect(() => {
-        // Update session count when it changes
         localStorage.setItem("sessionCount", sessionCount.toString());
     }, [sessionCount]);
+
+    useEffect(() => {
+        const storedTotalMinutes = parseFloat(localStorage.getItem('totalMinutes')) || 0;
+        setTotalMinutes(storedTotalMinutes);
+    }, []);
 
     function handleEditComplete(result) {
         if (result != null) {
@@ -85,15 +94,14 @@ function Profile() {
                                     ? <div className="birthday">Happy Birthday!</div>
                                     : <h1>My Profile</h1>
                             }
-                                          <div>Total Sessions: {sessionCount}</div>
+                            <div>Total Sessions: {sessionCount}</div>
+                            <div>Total Minutes: {totalMinutes}</div>
                             <UserProfile
                                 stored={stored}
                                 startEditCallback={() => setEditMode(true)}
                             />
                         </>
                 }
-                
-
             </div>
         </div>
     );

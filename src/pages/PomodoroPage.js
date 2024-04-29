@@ -9,10 +9,14 @@ const PomodoroPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [workMinutes, setWorkMinutes] = useState(45);
   const [breakMinutes, setBreakMinutes] = useState(15);
+
+
   const [sessionCount, setSessionCount] = useState(() => {
     const storedSessionCount = localStorage.getItem("sessionCount");
     return storedSessionCount ? parseInt(storedSessionCount) : 0;
   });
+
+
   const [completedMinutes, setCompletedMinutes] = useState(() => {
     const storedCompletedMinutes = localStorage.getItem("completedMinutes");
     return storedCompletedMinutes ? parseInt(storedCompletedMinutes) : 0;
@@ -85,7 +89,7 @@ const PomodoroPage = () => {
           </div>
           <div className="text-white">
             Completed Sessions: {sessionCount} <br />
-            Completed Minutes: {completedMinutes}
+
           </div>
         </SettingsContext.Provider>
       </div>

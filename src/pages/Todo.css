@@ -104,10 +104,7 @@ h1 {
   }
 }
 
-.scrollable {
-  max-height: 300px; /* Adjust this value as needed */
-  overflow-y: auto;
-}
+
 
 .FullHeightTodoWrapper {
   height: 100%;
@@ -119,6 +116,11 @@ h1 {
   padding: 2rem;
   border-radius: 5px;
   height: 100%; /* Makes TodoWrapper fill the FullHeightTodoWrapper */
+}
+
+.todo-list {
+  max-height: 500px; /* Adjust the max height as needed */
+  overflow-y: 400; /* Enable vertical scrolling */
 }
 
 /* Ensures text inside TodoWrapper is white */
