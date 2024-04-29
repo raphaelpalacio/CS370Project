@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { TodoWrapper } from "./TodoWrapper"; // Import TodoWrapper
 import ChatComponent from "./ChatComponent"; // Import the ChatComponent
-import Function from "./Alarm/TimerFunction";
+import TimerFunction from "./Alarm/TimerFunction";
 import SettingsContext from "./Alarm/SettingsContext";
+import axios from "axios"; // Make sure to install axios using `npm install axios`
 
 const PomodoroPage = () => {
   const [completedPomodoros, setCompletedPomodoros] = useState(0); // State for completedPomodoros
@@ -25,6 +26,18 @@ const PomodoroPage = () => {
   useEffect(() => {
     localStorage.setItem("completedMinutes", completedMinutes.toString());
   }, [completedMinutes]);
+
+   // Function to complete a session and post to backend
+   const completeSession = async (sessionId) => {
+    console.log("Attempting to complete session", sessionId); // Debug: Check if this line is reached
+    try {
+      const response = await axios.post("http://localhost:5000/session/counter", { session_id: sessionId });
+      console.log(response.data.message); // Debug: Check the response from the backend
+      incrementCompletedPomodoros(); // Increment session count and completed minutes
+    } catch (error) {
+      console.error("There was an error completing the session", error.response?.data || error.message);
+    }
+  };
 
   // Function to increment completedPomodoros and update localStorage
   const incrementCompletedPomodoros = () => {
@@ -81,7 +94,10 @@ const PomodoroPage = () => {
           }}
         >
           <div className="h-1/5 bg-gray-700 p-4">
-            <Function incrementCompletedPomodoros={incrementCompletedPomodoros} />
+          <TimerFunction 
+            incrementCompletedPomodoros={incrementCompletedPomodoros} 
+            onSessionComplete={completeSession} // Pass the completeSession function as a prop to TimerFunction
+          />
           </div>
           <div className="text-white">
             Completed Sessions: {sessionCount} <br />
