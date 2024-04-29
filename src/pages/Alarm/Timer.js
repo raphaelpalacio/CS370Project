@@ -107,7 +107,6 @@ function Timer() {
         </div>
       </div>
     </div>
-    </div>
   );
 }
 
