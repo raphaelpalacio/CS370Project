@@ -93,11 +93,11 @@ class Session(Base):
     __tablename__ = 'session'
     sID = Column(Integer, primary_key=True)
     uID = Column(Integer, ForeignKey('user.uID'), nullable=False)
-    scID = Column(Integer, ForeignKey('sessionCounter.scID'), nullable=True)
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime, nullable=True)
     duration = Column(Integer, nullable=True)
     status = Column(Integer, nullable=False)
+    sessions_studied = Column(Integer, default=0)  # New column to track completed sessions
     created_at = Column(DateTime, default=datetime.utcnow)
 
 class Playlist(Base):
@@ -261,6 +261,24 @@ def delete_todo():
     data = request.json
     print(data)
     return jsonify('todo deleted')
+
+@app.route('/session/counter', methods=['POST'])
+@cross_origin(origin='http://localhost:3000', headers=['Content-Type'])
+def count_sessions():
+    session_id = request.json.get('session_id')
+    session = Session.query.filter_by(sID=session_id).first()
+    
+    if session:
+        if session.status == 1:  # Check if the session is currently active
+            session.status = 0   # Mark the session as completed
+            session.end_time = datetime.utcnow()  # Set the end time to now
+            session.sessions_studied += 1  # Increment the completed sessions count
+            db.session.commit()
+            return jsonify({'message': 'Session completed successfully.'}), 200
+        else:
+            return jsonify({'message': 'Session is already completed.'}), 400
+    else:
+        return jsonify({'message': 'Session not found.'}), 404
 
 
 @app.route('/sessions/start', methods=['POST'])
