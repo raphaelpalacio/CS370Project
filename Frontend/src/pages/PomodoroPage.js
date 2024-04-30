@@ -33,17 +33,15 @@ const PomodoroPage = () => {
 
    // Function to complete a session and post to backend
    const completeSession = async (sessionId) => {
+    console.log("Attempting to complete session", sessionId); // Debug: Check if this line is reached
     try {
-      const response = await axios.post("http://localhost:5000/sessions", {
-        sessionId: sessionId,
-        completedMinutes: workMinutes
-      });
-      console.log("Session completed:", response.data);
+      const response = await axios.post("http://localhost:5000/session/counter", { session_id: sessionId });
+      console.log(response.data.message); // Debug: Check the response from the backend
+      incrementCompletedPomodoros(); // Increment session count and completed minutes
     } catch (error) {
-      console.error("There was a problem completing the session:", error);
+      console.error("There was an error completing the session", error.response?.data || error.message);
     }
   };
-    
 
   // Function to increment completedPomodoros and update localStorage
   const incrementCompletedPomodoros = () => {
