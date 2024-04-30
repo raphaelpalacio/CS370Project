@@ -25,9 +25,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 
-# Configuration
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pomodoro.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# SQLAlchemy Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://pomodoroCS370:pomodoroAdmin370!@pomodoroplus.c9eokc6gmtps.us-east-1.rds.amazonaws.com:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -46,10 +44,6 @@ load_dotenv()
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 API_AUDIENCE = os.getenv('API_AUDIENCE')
 ALGORITHMS = ['RS256']
-
-
-# # Make all of the tables straight to SQL to PGAdmin
-# Base = declarative_base()
 
 # Association table for Users and Study Groups
 StudyGroupMember = db.Table('StudyGroupMember',
@@ -135,10 +129,6 @@ class StudyGroup(db.Model):
     updated_at = db.Column(db.DateTime)
     members = db.relationship('User', secondary=StudyGroupMember, back_populates='study_groups')
     channels = db.relationship('Channel', secondary=StudyGroupChannel, back_populates='study_groups')
-
-# # Setup the database connection and engine
-# engine = create_engine('postgresql://postgres:W3ddings@localhost/pomodoroplus-db')
-# Base.metadata.create_all(bind=engine)
 
 # Helper Functions
 def get_token_auth_header():
@@ -278,27 +268,6 @@ def count_sessions():
     print(data)
     return jsonify('session started')
 
-# def count_sessions():
-#     session_id = request.json.get('session_id')
-#     session = Session.query.filter_by(sID=session_id).first()
-    
-#     if session:
-#         if session.status == 1:  # Check if the session is currently active
-#             session.status = 0   # Mark the session as completed
-#             session.end_time = datetime.utcnow()  # Set the end time to now
-#             session.sessions_studied += 1  # Increment the completed sessions count
-#             db.session.commit()
-#             return jsonify({'message': 'Session completed successfully.'}), 200
-#         else:
-#             return jsonify({'message': 'Session is already completed.'}), 400
-#     else:
-#         return jsonify({'message': 'Session not found.'}), 404
-    
-
-
-
-
-
 @app.route('/sessions/stop', methods=['POST'])
 def stop_session():
     session_id = request.json.get('session_id')
@@ -316,21 +285,6 @@ def session_history():
     sessions = Session.query.all()
     sessions_data = [{'session_id': session.sID, 'start_time': session.start_time.isoformat(), 'end_time': session.end_time.isoformat() if session.end_time else None, 'duration': session.duration, 'status': session.status} for session in sessions]
     return jsonify(sessions_data), 200
-
-# @app.route('/session/counter', methods=['POST'])
-# def create_session_counter():
-#     data = request.json
-#     new_counter = session_count(uID=data['uID'], session_count=data['session_count'])
-#     db.session.add(new_counter)
-#     db.session.commit()
-#     return jsonify({'message': 'Session counter created successfully.', 'counter_id': new_counter.scID}), 201
-
-
-# @app.route('/session/count', methods=['GET'])
-# def session_count():
-#     session_count = session_count.query.all()
-#     session_count_data = [{'counter_id': counter.scID, 'session_count': counter.session_count} for counter in session_count]
-#     return jsonify(session_count_data), 200
 
 @app.route('/users/register', methods=['POST'])
 def register_user():
