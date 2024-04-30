@@ -38,7 +38,7 @@
     "serve-static": "^1.15.0",
     "socket.io-client": "^4.7.5",
     "start": "^5.1.0",
-    "stream-chat": "^8.27.0",
+    "stream-chat": "^8.29.0",
     "stream-chat-react": "^11.15.2",
     "web-vitals": "^2.1.4"
   },

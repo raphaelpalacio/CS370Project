@@ -46,7 +46,7 @@ const PomodoroPage = () => {
           <ChatView />
         </div>
         <div className="overflow-y-auto h-1/2">
-          {/* <TodoWrapper /> */}
+          <TodoWrapper />
         </div>
       </div>
 

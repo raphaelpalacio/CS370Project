@@ -2490,9 +2490,9 @@
     "pretty-format" "^27.0.2"
 
 "@testing-library/dom@>=7.21.4":
-  "integrity" "sha512-PmJPnogldqoVFf+EwbHvbBJ98MmqASV8kLrBYgsDNxQcFMeIS7JFL48sfyXvuMtgmWO/wMhh25odr+8VhDmn4g=="
-  "resolved" "https://registry.npmjs.org/@testing-library/dom/-/dom-10.0.0.tgz"
-  "version" "10.0.0"
+  "integrity" "sha512-wdsYKy5zupPyLCW2Je5DLHSxSfbIp6h80WoHOQc+RPtmPGA52O9x5MJEkv92Sjonpq+poOAtUKhh1kBGAXBrNA=="
+  "resolved" "https://registry.npmjs.org/@testing-library/dom/-/dom-10.1.0.tgz"
+  "version" "10.1.0"
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -10941,10 +10941,10 @@
     "@stream-io/transliterate" "^1.5.5"
     "mml-react" "^0.4.7"
 
-"stream-chat@^8.21.0", "stream-chat@^8.27.0":
-  "integrity" "sha512-sRTeErumAlFxnqkiy5++NYp77l3tE7qX/TUEPRbE2nB9NHv5unHQ/S24tQJsildYk5O/nz8UzQENYG0E0tcIXw=="
-  "resolved" "https://registry.npmjs.org/stream-chat/-/stream-chat-8.27.0.tgz"
-  "version" "8.27.0"
+"stream-chat@^8.21.0", "stream-chat@^8.29.0":
+  "integrity" "sha512-Dzwey5Hg4xX4W3Kl3o2OBn+tyxV4BecnKNTMBjccLAHOjXGhawAAtpwTw5ljRRldAdzjJ2t2ORtHjwKluZ5VyA=="
+  "resolved" "https://registry.npmjs.org/stream-chat/-/stream-chat-8.29.0.tgz"
+  "version" "8.29.0"
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@types/jsonwebtoken" "~9.0.0"
