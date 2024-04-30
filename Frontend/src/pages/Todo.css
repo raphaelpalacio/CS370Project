@@ -1,0 +1,168 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  text-align: center;
+}
+h2 {
+  color:white
+}
+
+h1 {
+  color: #000000;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.TodoWrapper {
+  background: #1a1a40;
+  margin-top: 2rem; /* Adjusted for better responsiveness */
+  padding: 1rem; /* Adjusted padding */
+  border-radius: 5px;
+  position: relative; /* Changed from absolute to relative for better layout flow */
+}
+
+.TodoForm {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.todo-input {
+  outline: none;
+  background: none;
+  border: 1px solid #5624d4;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  width: 80%; /* Responsive width */
+  color: #e8dddd;
+}
+
+.todo-input::placeholder {
+  color: #ffffff4d;
+}
+
+.todo-btn {
+  background: #8758ff;
+  color: #fff;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  height : 40px;
+}
+
+.Todo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #8758ff;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.fa-trash {
+  margin-left: 0.75rem;
+}
+
+.incompleted {
+  color: #fff;
+  cursor: pointer;
+}
+
+.completed {
+  color: #c5aeff;
+  text-decoration: line-through;
+  cursor: pointer;
+}
+
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .TodoWrapper {
+    margin-top: 1rem;
+    padding: 0.5rem;
+  }
+
+  .todo-input {
+    width: 90%; /* More width for smaller devices */
+  }
+
+  h1 {
+    font-size: 1.5rem; /* Smaller text for smaller screens */
+  }
+}
+
+
+
+.FullHeightTodoWrapper {
+  height: 100%;
+  overflow-y: auto; /* Allows scrolling within the TodoWrapper */
+}
+
+.TodoWrapper {
+  background: #1a1a40;
+  padding: 2rem;
+  border-radius: 5px;
+  height: 100%; /* Makes TodoWrapper fill the FullHeightTodoWrapper */
+}
+
+.todo-list {
+  max-height: 500px; /* Adjust the max height as needed */
+  overflow-y: 400; /* Enable vertical scrolling */
+}
+
+/* Ensures text inside TodoWrapper is white */
+.TodoWrapper,
+.TodoWrapper h1,
+.TodoWrapper p {
+  color: #ffffff; /* Makes text color white */
+}
+
+.TodoForm {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Other styles remain the same */
+
+.TodoForm {
+  display: flex; /* Aligns children (input and button) inline */
+  justify-content: space-between; /* Puts maximum space between children */
+  width: 100%; /* Take the full width of its parent */
+  margin-bottom: 1rem; /* Keeps space below the form */
+}
+
+.todo-input {
+  outline: none;
+  background: none;
+  border: 1px solid #5624d4;
+  padding: 0.5rem 1rem;
+  width: 80%; /* Adjust width to leave space for button */
+  color: #e8dddd;
+  margin-right: 10px; /* Adds some space between the input and the button */
+}
+
+.todo-btn {
+  background: #8758ff;
+  color: #fff;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  /* No width specified here, it will take the space needed for its content */
+}
+
+.task-title {
+  font-size: 20px;
+}
