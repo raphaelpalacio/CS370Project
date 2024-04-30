@@ -17,12 +17,42 @@ export const TodoWrapper = () => {
   }, [todos]);
 
   const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, completed: false };
+    console.log('test')
+    const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false };
+    
     setTodos([...todos, newTodo]);
+    const titleTest = {
+      user:user
+    };
+    axios.post("http://localhost:5000/addTodo", titleTest, {
+      headers: {
+        "Content-Type": "application/json", 
+      }
+    })
+    .then((response) => {
+      console.log('Todo added:', response.data);
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your post operation:', error);
+    });
   };
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
+
+    const todoData = {user: user};
+    axios.post("http://localhost:5000/todosDelete", todoData, {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then((response) => {
+      console.log('Todo deleted:', response.data);
+      
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your post operation:', error);
+    });
   };
 
   const toggleComplete = (id) => {
