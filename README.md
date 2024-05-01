@@ -14,10 +14,6 @@ Welcome to Pomodoro+, a safe space where you can study using the versitile Pomod
 
 To run a local copy of this project, follow the steps below depending on your operating system.
 
-## Frontend Installation
-
-To run a local copy of this project, follow the steps below depending on your operating system.
-
 1. **Install Homebrew**  
    Open the Terminal and run the following command to install Homebrew (if it's not already installed):
 
