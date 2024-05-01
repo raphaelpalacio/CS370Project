@@ -1,6 +1,6 @@
 # Welcome to Pomordoro+
 
-# Link to Webstie
+# Link to Website
 https://cs-370-project-x41n.vercel.app/
 
 ## Description
