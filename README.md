@@ -60,3 +60,9 @@ To run a local copy of this project, follow the steps below depending on your op
 
 6. **View your local frontend**
    Open a browser and go to: [http://localhost:3000](http://localhost:3000)
+
+## Frontend Technlogies
+
+Our website is crafted using React, JavaScript, HTML, CSS, and Tailwind CSS. React helps us build dynamic and reusable UI components, while JavaScript enables interactive elements. HTML structures our content, CSS adds styling, and Tailwind CSS facilitates rapid, utility-first design. This combination ensures a responsive and visually appealing user experience across all devices
+
+For more details and insights into the architecture, refer to the ./src sub-directory
