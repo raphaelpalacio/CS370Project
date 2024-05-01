@@ -70,3 +70,79 @@ For more details and insights into the architecture, refer to the ./src sub-dire
 
 <img src="https://github.com/raphaelpalacio/CS370Project/blob/main/doc/architecture.svg" >
 
+
+## The Pomodoro API
+
+### Overview
+The Pomodoro API is a Flask-based RESTful API designed for managing tasks, sessions, and user interactions in a study-oriented application. The API includes user authentication via Auth0, session management, task tracking, and supports a CORS configuration to allow requests from a specific origin.
+
+### Setup and Configuration
+- **Flask App Initialization**: The API uses Flask for server setup and SQLAlchemy for ORM.
+- **CORS**: Cross-Origin Resource Sharing is enabled for all routes, allowing access from `http://localhost:3000`.
+- **Database Configuration**: Connects to a PostgreSQL database. SQLAlchemy is used to handle database operations.
+- **Migration**: Flask-Migrate is used for handling database migrations. (This is alembic)
+- **Authentication**: Utilizes Auth0 for handling user authentication with JWTs.
+- **Requirements.txt**: All of the python dependencies are kept in `requriments.txt` and is up to date to the latest versions
+- **Python Virtual Environment**: For ease of use, we have set up a virtual python environment with all of the dependencies installed properly
+- **.env File**: To run the API properly you need to add these two variables within a `.env` file:
+	```bash
+	AUTH0_DOMAIN = 'dev-otrfj0d3n15cdjdz.us.auth0.com'
+	API_AUDIENCE = 'https://dev-otrfj0d3n15cdjdz.us.auth0.com/api/v2/'
+	```
+
+### Environment Variables
+- `AUTH0_DOMAIN` and `API_AUDIENCE` must be set in your environment variables for JWT verification.
+
+### Models
+1. **User**: Represents a user with fields like username, email, password, and associated roles.
+2. **ToDo**: Tasks that users can create, update, or delete.
+3. **Session**: Represents a study session with fields like start and end times, duration, and status.
+4. **Playlist**: User-created playlists for managing study music or sounds.
+5. **Channel**: Communication channels for users within study groups.
+6. **Message**: Messages within channels.
+7. **StudyGroup**: Groups for users to study together, linked to channels and users.
+
+### Association Tables (Many to Many)
+- **StudyGroupMember**: Links users to study groups.
+- **StudyGroupChannel**: Links channels to study groups.
+- **ChannelMessage**: Links messages to channels.
+
+### Routes
+1. **Base Route (`/`)**: Welcomes users to the API.
+2. **Todo Management (`/todos`, `/todos/<int:todo_id>`)**: Endpoints for retrieving, adding, and updating todos.
+3. **Session Management (`/sessions/start`, `/sessions/stop`, `/sessions/history`)**: Manage study sessions.
+4. **User Management (`/users/register`, `/users/login`, `/users/logout`, `/users/profile`, `/users/delete`)**: User registration, login, logout, profile management, and deletion.
+
+### Authentication and Authorization
+- **Token Handling**: Includes functions to extract and verify JWT tokens, with error handling for expired or invalid tokens.
+- **Cross-Origin Requests**: Handles cross-origin requests with proper headers.
+
+### Helper Functions
+- `get_token_auth_header()`: Extracts the authorization token from the header.
+- `verify_decode_jwt()`: Verifies and decodes the JWT using the public keys fetched from Auth0.
+- `current_user()`: Identifies the current user based on the session or JWT token.
+
+### Security
+- Passwords are hashed using Flask-Bcrypt.
+- Sensitive routes require JWT authentication.
+
+### Example Usage
+- **Add a ToDo**:
+```bash
+curl -X POST http://localhost:5000/todos -H 'Content-Type: application/json' -d '{"title": "New Task", "description": "Complete the task"}'
+```
+  
+- **Start a session:**
+```bash
+curl -X POST http://localhost:5000/sessions/start -H 'Content-Type: application/json' -d '{"uID": 1, "duration": 120}'
+```
+
+### Running the API in a Development Setting
+- To run our API in a developer setting you would just need to type this command in the terminal
+	```bash
+	python3 app.py
+
+	or
+
+	flask run
+```
