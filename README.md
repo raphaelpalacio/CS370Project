@@ -36,7 +36,8 @@ To run a local copy of this project, follow the steps below depending on your op
    ```
    git clone https://github.com/raphaelpalacio/CS370Project.git
    ```
-
+3a. **After cloning the repository download package.json and package-lock.json from this link. After you have downloaded them, please put it in the root folder of the repository**
+https://drive.google.com/drive/folders/1v0PrW5etrfCxgw0iECQ4WVbgJ9lj7CT8?usp=drive_link
 4. **Navigate to the directory and install dependencies**
 
    ```
