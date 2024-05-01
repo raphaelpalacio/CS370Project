@@ -7,10 +7,6 @@ import SettingsContext from "./SettingsContext";
 function Function() {
   const settingsInfo = useContext(SettingsContext);
 
-  
-  // const [showSettings, setShowSettings] = useState(false);
-  // const [workMinutes, setWorkMinutes] = useState(45);
-  // const [breakMinutes, setBreakMinutes] = useState(15);
  
 
   return (

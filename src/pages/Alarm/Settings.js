@@ -6,7 +6,7 @@ import BackButton from "./BackButton";
 
 
 function Settings() {
-  const { workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes, setShowSettings } = useContext(SettingsContext);
+  const { workMinutes, breakMinutes, setWorkingTime, setBreakMinutes, setShowSettings } = useContext(SettingsContext);
 
   const settingsInfo = useContext(SettingsContext);
   return(
@@ -17,7 +17,7 @@ function Settings() {
         thumbClassName={'thumb'}
         trackClassName={'track'}
         value={workMinutes}
-        onChange={newValue => setWorkMinutes(newValue)}
+        onChange={newValue => setWorkingTime(newValue)}
         min={1}
         max={120}
       />
