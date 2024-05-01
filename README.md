@@ -159,3 +159,6 @@ or
 
 flask run
 ```
+
+## Database and Hosting 
+For our application we used POSTGRESQL. For database hosting we used AWS RDS, for our API with use AWS EC2, and for our frontend, we hosted with Vercel
