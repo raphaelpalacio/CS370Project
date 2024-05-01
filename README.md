@@ -3,17 +3,17 @@
 # Link to Website
 https://cs-370-project-x41n.vercel.app/
 
+## How to Use Pomodoro+ as a Student
+
+1. When you first go to Pomodoro+, sign up and make an account! Navigate to the sign up button on the top right and click sign up with email and password
+3. After making an account, login and check out our Pomodoro page where you will find a timer, study sessions, and a to-do list
+4. When you are ready, download the chrome extention, block the websites that distract, and begin your study session!
+
 ## Description
 
 Welcome to Pomodoro+, a safe space where you can study using the versatile Pomodoro studying technique, join study groups, and install our chrome extension to block distracting websites on your computer to get the most out of your study session.
 
-## How to Use
-
-1. Login into our app using your own login creditions.
-2. After making an account, login and check out our Pomodoro page where you will find a timer, study sessions, and a to-do list
-3. When you are ready, download the chrome extention, block the websites that distract, and begin your study session!
-
-## Frontend Installation
+## Frontend and Chrome Installation
 
 To run a local copy of this project, follow the steps below depending on your operating system.
 
@@ -63,7 +63,17 @@ https://drive.google.com/drive/folders/1v0PrW5etrfCxgw0iECQ4WVbgJ9lj7CT8?usp=dri
 6. **View your local frontend**
    Open a browser and go to: [http://localhost:3000](http://localhost:3000)
 
-## Frontend Technlogies
+### Chrome Extension
+1. Navigate to chrome://extensions
+2. Toggle on developer mode on the top right
+3. Click load unpacked
+4. Navigate to the repository folder
+5. Select the chrome extension folder
+6. Click on the 'Pomodoro Blocker' folder
+7. Then click select on at the bottom of the Finder/Files view finder
+8. After it is loaded, navigate to your chrome extensions and scroll until you see 'Pomodoro Blocker'
+
+## Frontend Technologies
 
 Our website is crafted using React, JavaScript, HTML, CSS, and Tailwind CSS. React helps us build dynamic and reusable UI components, while JavaScript enables interactive elements. HTML structures our content, CSS adds styling, and Tailwind CSS facilitates rapid, utility-first design. This combination ensures a responsive and visually appealing user experience across all devices
 
