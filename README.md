@@ -18,13 +18,11 @@ To run a local copy of this project, follow the steps below depending on your op
 
 To run a local copy of this project, follow the steps below depending on your operating system.
 
-### On Mac:
-
 1. **Install Homebrew**  
    Open the Terminal and run the following command to install Homebrew (if it's not already installed):
 
    ```
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   /bin/bash -c "$(curl -fsSL -o install.sh https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
 2. **Install Node.js**  
@@ -61,4 +59,4 @@ To run a local copy of this project, follow the steps below depending on your op
    ```
 
 6. **View your local frontend**
-   Open a browser and go to:[http://localhost:3000](http://localhost:3000)
+   Open a browser and go to: [http://localhost:3000](http://localhost:3000)
