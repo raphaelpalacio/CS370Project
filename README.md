@@ -22,37 +22,43 @@ To run a local copy of this project, follow the steps below depending on your op
 
 1. **Install Homebrew**  
    Open the Terminal and run the following command to install Homebrew (if it's not already installed):
-   +++
+
+   ```
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   +++
+   ```
 
 2. **Install Node.js**  
    After installing Homebrew, install Node.js using this command:
-   +++
+
+   ```
    brew install node
-   +++
+   ```
 
 3. **Clone the repository**
-   +++
+
+   ```
    git clone https://github.com/raphaelpalacio/CS370Project.git
-   +++
+   ```
 
 4. **Navigate to the directory and install dependencies**
-   +++
-   cd dash-analytics/dash-frontend
+
+   ```
+   cd CS370Project
    npm install
-   +++
+   ```
 
 5. **Start the development server**
-   +++
+
+   ```
    npm start
-   +++
+   ```
 
    Alternatively, if you are using React:
-   +++
+
+   ```
    npm install react-scripts
    npm run start
-   +++
+   ```
 
 6. **View your local frontend**
    Open a browser and go to:[http://localhost:3000](http://localhost:3000)
