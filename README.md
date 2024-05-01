@@ -5,7 +5,7 @@ https://cs-370-project-x41n.vercel.app/
 
 ## Description
 
-Welcome to Pomodoro+, a safe space where you can study using the versitile Pomodoro studying technique, join study groups, and install our chrome extension to block distracting websites on your computer to get the most out of your study session.
+Welcome to Pomodoro+, a safe space where you can study using the versatile Pomodoro studying technique, join study groups, and install our chrome extension to block distracting websites on your computer to get the most out of your study session.
 
 ## How to Use
 
@@ -65,3 +65,7 @@ To run a local copy of this project, follow the steps below depending on your op
 Our website is crafted using React, JavaScript, HTML, CSS, and Tailwind CSS. React helps us build dynamic and reusable UI components, while JavaScript enables interactive elements. HTML structures our content, CSS adds styling, and Tailwind CSS facilitates rapid, utility-first design. This combination ensures a responsive and visually appealing user experience across all devices
 
 For more details and insights into the architecture, refer to the ./src sub-directory
+
+## Architecture
+
+<img src="https://github.com/raphaelpalacio/CS370Project/blob/main/doc/architecture.svg" >
