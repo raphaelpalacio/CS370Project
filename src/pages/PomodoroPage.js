@@ -5,6 +5,8 @@ import SettingsContext from "./Alarm/SettingsContext";
 import axios from "axios";
 import { TodoWrapper } from "./TodoWrapper";
 
+
+
 const PomodoroPage = () => {
   const [completedPomodoros, setCompletedPomodoros] = useState(0); // State for completedPomodoros
   const [showSettings, setShowSettings] = useState(false);
@@ -49,6 +51,7 @@ const PomodoroPage = () => {
   };
 
   return (
+    
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div className="w-1/5 bg-gray-800 text-white h-full">
@@ -85,6 +88,9 @@ const PomodoroPage = () => {
             Completed Sessions: {sessionCount} <br />
           </div>
         </SettingsContext.Provider>
+        <a href="https://stream-chat-three.vercel.app/">
+          <button class="inline-flex h-10 items-center justify-center rounded-md bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5">Start Chatting</button>
+        </a>
       </div>
     </div>
   );
