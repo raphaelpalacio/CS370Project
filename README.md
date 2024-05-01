@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Welcome to Pomordoro+
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
 
-## Available Scripts
+Welcome to Pomodoro+, a safe space where you can study using the versitile Pomodoro studying technique, join study groups, and install our chrome extension to block distracting websites on your computer to get the most out of your study session.
 
-In the project directory, you can run:
+## How to Use
 
-### `npm start`
+    1. Login into our app using your own login creditions, Google, or Github.
+    2. After making an account, login and check out our Pomodoro page where you will find a timer, study sessions, and a to-do list
+    3. When you are ready, download the chrome extention, block the websites that distract, and begin your study session!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Frontend Installation
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To run a local copy of this project, follow the steps below depending on your operating system.
 
-### `npm test`
+## Frontend Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To run a local copy of this project, follow the steps below depending on your operating system.
 
-### `npm run build`
+### On Mac:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Install Homebrew**  
+   Open the Terminal and run the following command to install Homebrew (if it's not already installed):
+   +++
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   +++
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. **Install Node.js**  
+   After installing Homebrew, install Node.js using this command:
+   +++
+   brew install node
+   +++
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Clone the repository**
+   +++
+   git clone https://github.com/raphaelpalacio/CS370Project.git
+   +++
 
-### `npm run eject`
+4. **Navigate to the directory and install dependencies**
+   +++
+   cd dash-analytics/dash-frontend
+   npm install
+   +++
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5. **Start the development server**
+   +++
+   npm start
+   +++
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   Alternatively, if you are using React:
+   +++
+   npm install react-scripts
+   npm run start
+   +++
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+6. **View your local frontend**
+   Open a browser and go to:[http://localhost:3000](http://localhost:3000)
