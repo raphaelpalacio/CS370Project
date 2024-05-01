@@ -6,9 +6,9 @@ Welcome to Pomodoro+, a safe space where you can study using the versitile Pomod
 
 ## How to Use
 
-    1. Login into our app using your own login creditions, Google, or Github.
-    2. After making an account, login and check out our Pomodoro page where you will find a timer, study sessions, and a to-do list
-    3. When you are ready, download the chrome extention, block the websites that distract, and begin your study session!
+1. Login into our app using your own login creditions, Google, or Github.
+2. After making an account, login and check out our Pomodoro page where you will find a timer, study sessions, and a to-do list
+3. When you are ready, download the chrome extention, block the websites that distract, and begin your study session!
 
 ## Frontend Installation
 
