@@ -9,36 +9,24 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export const TodoWrapper = () => {
   const { user, isAuthenticated } = useAuth0();
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem("todos")) || []); // Load todos from local storage or initialize as empty array
   const [editingId, setEditingId] = useState(null); // Track the id of the todo being edited
 
-  // Load todos from local storage when the component mounts
   useEffect(() => {
-    const storedTodos = localStorage.getItem("todos");
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
-    }
-  }, []);
-
-  // Update local storage whenever todos change
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("todos", JSON.stringify(todos)); // Update local storage whenever todos change
   }, [todos]);
 
   const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, completed: false }; // Removed isEditing
+    console.log('test')
+    const newTodo = { id: uuidv4(), task: todo, completed: false, isEditing: false };
+    
     setTodos([...todos, newTodo]);
-    console.log('User ID:', user.sub); 
-    console.log(user)
-   
-
     const titleTest = {
       user:user
     };
-
     axios.post("http://localhost:5000/addTodo", titleTest, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
       }
     })
     .then((response) => {
@@ -51,8 +39,7 @@ export const TodoWrapper = () => {
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
-    console.log('User ID:', user.sub); 
-    console.log(user)
+
     const todoData = {user: user};
     axios.post("http://localhost:5000/todosDelete", todoData, {
       headers: {
@@ -61,12 +48,10 @@ export const TodoWrapper = () => {
     })
     .then((response) => {
       console.log('Todo deleted:', response.data);
-      // You might want to update your state here if needed
+      
     })
     .catch((error) => {
       console.error('There has been a problem with your post operation:', error);
-      // Handle any errors here
-      // Optionally, remove the optimistically added todo if the POST fails
     });
   };
 

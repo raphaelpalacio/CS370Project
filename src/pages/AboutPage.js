@@ -37,7 +37,7 @@ const AboutPage = () => {
       id: 4,
       name: "Jooha Lee",
       hometown: "Madison, WI",
-      major: "Quantitative Sience",
+      major: "Quantitative Sience B.S",
       graduatingClass: "Class of 2025",
       image: "/jooha.jpg",
       linkedin: "https://www.linkedin.com/in/jooha-lee-a51b30242/",

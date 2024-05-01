@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Group from './Group';
-import { months, calcButtonTextColor } from '../tools';
+import { months } from '../tools';
 
 function renderMonthOptions() {
-    return months.getMonths().map( (m, i) => {
+    return months.getMonths().map((m, i) => {
         return <option
             key={i}
             value={i}
@@ -37,35 +37,31 @@ export default function EditableUserProfile({
 
     function handleSaveClicked() {
         console.log("Saved");
-        editCompleteCallback({name, month, day, color});
+        editCompleteCallback({ name, month, day, color });
     }
 
     useEffect(() => {
         setDay(bound(day, 1, maxDay));
     }, [month]);
 
-    const buttonStyle = {
-        backgroundColor: color,
-        color: calcButtonTextColor(color)
-    };
 
-    calcButtonTextColor(color);
+
     const h2Style = {
         color: 'black', // Change color to your desired color
     };
 
     return <>
-        <Group>            
+        <Group>
             <h2 style={h2Style}>Name:</h2>
             <input
                 type='text'
                 value={name}
                 onChange={e => setName(e.target.value)}
-            />            
+            />
         </Group>
-        <Group>            
-            <h2 style={h2Style}>Birthday:</h2>            
-            
+        <Group>
+            <h2 style={h2Style}>Birthday:</h2>
+
             <select
                 value={month}
                 onChange={e => setMonth(bound(e.target.value, 0, 11))}
@@ -76,12 +72,13 @@ export default function EditableUserProfile({
                 type='number'
                 value={day}
                 onChange={e => setDay(bound(e.target.value, 1, maxDay))}
-                style={{width: "50px"}}
+                style={{ width: "50px" }}
             />
         </Group>
         <Group>
-            <button style={buttonStyle} onClick={handleSaveClicked}>Save</button>
-            <button style={buttonStyle} onClick={handleCancelClicked}>Cancel</button>
-        </Group>
+    <button style={{ backgroundColor: 'white', color: 'black' }} onClick={handleSaveClicked}>Save</button>
+    <button style={{ backgroundColor: 'white', color: 'black' }} onClick={handleCancelClicked}>Cancel</button>
+    {/* Ensure the color of the Cancel button is black */}
+</Group>
     </>
 }

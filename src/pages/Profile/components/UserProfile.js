@@ -43,10 +43,12 @@ export default function EditableUserProfile({
 
             {/* Add some margin or padding to create space */}
             <Group style={{ marginTop: '20px' }}>
-                <button
-                    style={buttonStyle}
-                    onClick={startEditCallback}
-                >Edit</button>
+            <button
+    style={{ backgroundColor: 'white', color: 'black' }} // Set both background and text color to black
+    onClick={startEditCallback}
+>
+    Edit
+</button>
             </Group>
         </div>
     );
