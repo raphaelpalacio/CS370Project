@@ -139,10 +139,10 @@ curl -X POST http://localhost:5000/sessions/start -H 'Content-Type: application/
 
 ### Running the API in a Development Setting
 - To run our API in a developer setting you would just need to type this command in the terminal
-	```bash
-	python3 app.py
+```bash
+python3 app.py
 
-	or
+or
 
-	flask run
+flask run
 ```
